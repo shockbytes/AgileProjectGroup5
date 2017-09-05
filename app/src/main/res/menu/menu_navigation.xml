@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/menu_navigation_coach"
+            android:checked="true"
+            android:icon="@drawable/ic_navigation_coach"
+            android:title="@string/title_coach" />
+
+        <item
+            android:id="@+id/menu_navigation_run"
+            android:icon="@drawable/ic_navigation_run"
+            android:title="@string/title_running" />
+
+        <item
+            android:id="@+id/menu_navigation_history"
+            android:icon="@drawable/ic_navigation_history"
+            android:title="@string/title_history" />
+
+        <item android:title="">
+            <menu>
+
+                <item
+                    android:id="@+id/menu_navigation_settings"
+                    android:icon="@drawable/ic_navigation_settings"
+                    android:title="Settings" />
+
+            </menu>
+        </item>
+    </group>
+
+
+</menu>

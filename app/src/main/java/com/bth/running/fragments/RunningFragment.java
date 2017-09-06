@@ -52,8 +52,6 @@ public class RunningFragment extends Fragment
 
     private GoogleMap map;
 
-    private boolean isFirstLocation;
-
     @Inject
     protected LocationManager locationManager;
 
@@ -82,7 +80,6 @@ public class RunningFragment extends Fragment
     protected TextView txtAvgPace;
 
     public RunningFragment() {
-        isFirstLocation = true;
     }
 
     @Override
@@ -228,11 +225,8 @@ public class RunningFragment extends Fragment
     @Override
     public void onLocationUpdate(Location location) {
 
-        if (isFirstLocation) {
-            isFirstLocation = false;
-            map.moveCamera(CameraUpdateFactory
-                    .newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 16));
-        }
+        map.moveCamera(CameraUpdateFactory
+                .newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 16));
 
         if (runningManager.isRecording()) {
             runningManager.updateCurrentRun(location);

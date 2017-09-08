@@ -3,22 +3,33 @@ package com.bth.running.fragments;
 
 import android.Manifest;
 import android.content.IntentSender;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.GestureDetectorCompat;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bth.running.R;
+import com.bth.running.core.MainActivity;
 import com.bth.running.core.RunningApp;
 import com.bth.running.location.LocationManager;
+import com.bth.running.running.Run;
 import com.bth.running.running.RunningManager;
+import com.bth.running.util.AppParams;
+import com.bth.running.util.ViewManager;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
@@ -27,6 +38,10 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -38,7 +53,7 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 
 public class RunningFragment extends Fragment
-        implements OnMapReadyCallback, LocationManager.OnLocationUpdateListener {
+        implements OnMapReadyCallback, LocationManager.OnLocationUpdateListener, GestureDetector.OnDoubleTapListener {
 
     private static final int REQ_CODE_PERM_LOCATION = 0x1245;
     private static final int REQUEST_CHECK_SETTINGS = 0x9874;
@@ -51,12 +66,28 @@ public class RunningFragment extends Fragment
     }
 
     private GoogleMap map;
+    private Polyline trackLine;
+    private boolean isFirstLocation;
+
+    private GestureDetectorCompat gestureDetector;
 
     @Inject
     protected LocationManager locationManager;
 
     @Inject
     protected RunningManager runningManager;
+
+    @Bind(R.id.fragment_running_header)
+    protected View headerView;
+
+    @Bind(R.id.fragment_running_stop_help_view)
+    protected View stopHelpView;
+
+    @Bind(R.id.fragment_running_stop_help_imgview)
+    protected View stopHelpImageView;
+
+    @Bind(R.id.fragment_running_data_view)
+    protected View headerDataView;
 
     @Bind(R.id.fragment_running_map_background)
     protected View mapBackgroundView;
@@ -65,7 +96,7 @@ public class RunningFragment extends Fragment
     protected Button btnStart;
 
     @Bind(R.id.fragment_running_txt_time)
-    protected TextView txtTime;
+    protected Chronometer chronometer;
 
     @Bind(R.id.fragment_running_txt_distance)
     protected TextView txtDistance;
@@ -87,6 +118,7 @@ public class RunningFragment extends Fragment
         super.onCreate(savedInstanceState);
         ((RunningApp) getActivity().getApplication()).getAppComponent().inject(this);
         showMapFragment();
+        isFirstLocation = true;
     }
 
     @Override
@@ -101,6 +133,7 @@ public class RunningFragment extends Fragment
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setupTextViews();
+        setupHeaderGestureRecognizer();
     }
 
     @Override
@@ -137,10 +170,8 @@ public class RunningFragment extends Fragment
 
         if (EasyPermissions.hasPermissions(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION)) {
-
             map.setMyLocationEnabled(true);
             locationManager.start(this);
-
         } else {
             EasyPermissions.requestPermissions(this, getString(R.string.perm_location_rationale),
                     REQ_CODE_PERM_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -149,38 +180,160 @@ public class RunningFragment extends Fragment
     }
 
     private void setupTextViews() {
-        txtTime.setText("0:00");
+        chronometer.setText("00:00");
         txtDistance.setText("0.0 km");
         txtCurrentPace.setText("0:00\nmin/km");
-        txtCalories.setText("0");
+        txtCalories.setText("0\nkcal");
         txtAvgPace.setText("0:00\nmin/km");
     }
 
     private void showMapFragment() {
+
         SupportMapFragment mapFragment = new SupportMapFragment();
-        getFragmentManager().beginTransaction().replace(R.id.fragment_running_map_container, mapFragment).commit();
+        getFragmentManager().beginTransaction()
+                .replace(R.id.fragment_running_map_container, mapFragment)
+                .commit();
         mapFragment.getMapAsync(this);
+    }
+
+    private void setupHeaderGestureRecognizer() {
+
+        gestureDetector = new GestureDetectorCompat(getContext(),
+                new GestureDetector.OnGestureListener() {
+                    @Override
+                    public boolean onDown(MotionEvent motionEvent) {
+                        return true;
+                    }
+
+                    @Override
+                    public void onShowPress(MotionEvent motionEvent) {
+
+                    }
+
+                    @Override
+                    public boolean onSingleTapUp(MotionEvent motionEvent) {
+                        return true;
+                    }
+
+                    @Override
+                    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+                        return false;
+                    }
+
+                    @Override
+                    public void onLongPress(MotionEvent motionEvent) {
+                        showHelpHeader();
+                    }
+
+                    @Override
+                    public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+                        return false;
+                    }
+                });
+        gestureDetector.setOnDoubleTapListener(this);
+
+        headerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return gestureDetector.onTouchEvent(motionEvent);
+            }
+        });
+    }
+
+    private void showHelpHeader() {
+
+        ((MainActivity) getActivity()).animateToolbar();
+
+        stopHelpView.animate()
+                .alpha(1)
+                .setStartDelay(0)
+                .setDuration(400)
+                .withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        stopHelpView.animate()
+                                .alpha(0)
+                                .setStartDelay(AppParams.HELP_SHOW_DELAY)
+                                .start();
+                    }
+                }).start();
+        headerDataView.animate()
+                .alpha(0.1f)
+                .scaleY(0.8f)
+                .scaleX(0.8f)
+                .setStartDelay(0)
+                .setDuration(400)
+                .withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        headerDataView.animate()
+                                .alpha(1)
+                                .scaleY(1)
+                                .scaleX(1)
+                                .setStartDelay(AppParams.HELP_SHOW_DELAY)
+                                .start();
+                    }
+                }).start();
+
+        ViewManager.animateDoubleTap(stopHelpImageView);
+    }
+
+    private void updateTrackOnMap(Location loc) {
+
+        if (trackLine == null) {
+
+            PolylineOptions lineOptions = new PolylineOptions()
+                    .width(15)
+                    .color(Color.parseColor("#03A9F4"));
+            trackLine = map.addPolyline(lineOptions);
+        }
+
+        LatLng current = new LatLng(loc.getLatitude(), loc.getLongitude());
+        List<LatLng> pointsSoFar = trackLine.getPoints();
+        pointsSoFar.add(current);
+        trackLine.setPoints(pointsSoFar);
+    }
+
+    private void animateStartingViews(boolean animateOut) {
+
+        int alpha = animateOut ? 0 : 1;
+
+        // Animate button & transparent view with a fade out ;transition and hide it in the end
+        btnStart.animate().alpha(alpha).setDuration(500);
+        mapBackgroundView.animate().alpha(alpha).setDuration(500);
+    }
+
+    private void startRun() {
+
+        runningManager.startRunRecording();
+        animateStartingViews(true);
+
+        chronometer.setBase(SystemClock.elapsedRealtime());
+        chronometer.start();
+
+        ((MainActivity) getActivity()).lockNavigationDrawer(true);
+    }
+
+    private void stopRun() {
+
+        animateStartingViews(false);
+        runningManager.stopRunRecord();
+        ((MainActivity) getActivity()).lockNavigationDrawer(false);
+
+        Run run = runningManager.getFinishedRun();
+
+        chronometer.stop();
+        long elapsedSeconds = (SystemClock.elapsedRealtime() - chronometer.getBase()) / 60000;
+
+        // TODO Show summary of run in new screen and store it in Realm
+
     }
 
     @OnClick(R.id.fragment_running_btn_start)
     protected void onClickButtonStart() {
 
         if (!runningManager.isRecording()) {
-            runningManager.startRunRecording();
-
-            // Animate button & transparent view with a fade out ;transition and hide it in the end
-            btnStart.animate().alpha(0).setDuration(500).withEndAction(new Runnable() {
-                @Override
-                public void run() {
-
-                }
-            });
-            mapBackgroundView.animate().alpha(0).setDuration(500).withEndAction(new Runnable() {
-                @Override
-                public void run() {
-                    mapBackgroundView.setVisibility(View.GONE);
-                }
-            });
+            startRun();
         }
     }
 
@@ -195,7 +348,6 @@ public class RunningFragment extends Fragment
 
     @Override
     public void onError(Exception e) {
-
 
         int statusCode = ((ApiException) e).getStatusCode();
         switch (statusCode) {
@@ -225,15 +377,43 @@ public class RunningFragment extends Fragment
     @Override
     public void onLocationUpdate(Location location) {
 
-        map.moveCamera(CameraUpdateFactory
-                .newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 16));
-
-        if (runningManager.isRecording()) {
-            runningManager.updateCurrentRun(location);
-
-            // TODO Update track on map & update views
-            txtDistance.setText(runningManager.getDistanceCovered() + " km");
+        if (isFirstLocation) {
+            isFirstLocation = false;
+            map.moveCamera(CameraUpdateFactory
+                    .newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 16));
+        } else {
+            map.animateCamera(CameraUpdateFactory
+                    .newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
         }
 
+        if (runningManager.isRecording()) {
+
+            updateTrackOnMap(location);
+            runningManager.updateCurrentRun(location);
+
+            // TODO Update all views
+            txtDistance.setText(runningManager.getDistanceCovered() + " km");
+        }
+    }
+
+    @Override
+    public boolean onSingleTapConfirmed(MotionEvent motionEvent) {
+        return true;
+    }
+
+    @Override
+    public boolean onDoubleTap(MotionEvent motionEvent) {
+
+        if (runningManager.isRecording()) {
+            stopRun();
+        } else {
+            Snackbar.make(getView(), "Run hasn't started", Snackbar.LENGTH_SHORT).show();
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onDoubleTapEvent(MotionEvent motionEvent) {
+        return true;
     }
 }

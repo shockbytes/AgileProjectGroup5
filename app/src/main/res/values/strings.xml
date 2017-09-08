@@ -9,5 +9,6 @@
     <string name="perm_location_rationale">Location is needed for the map service</string>
     <string name="distance_formatted">%f km</string>
     <string name="start_run">START RUN</string>
+    <string name="help_text">Double tap to stop run</string>
 
 </resources>

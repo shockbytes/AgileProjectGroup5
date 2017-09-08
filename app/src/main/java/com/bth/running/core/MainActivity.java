@@ -1,6 +1,9 @@
 package com.bth.running.core;
 
 import android.Manifest;
+import android.animation.AnimatorSet;
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,6 +25,7 @@ import com.bth.running.R;
 import com.bth.running.fragments.CoachFragment;
 import com.bth.running.fragments.HistoryFragment;
 import com.bth.running.fragments.RunningFragment;
+import com.bth.running.util.AppParams;
 import com.bth.running.util.ResourceManager;
 
 import butterknife.Bind;
@@ -126,7 +130,7 @@ public class MainActivity extends AppCompatActivity
 
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
-            //getSupportActionBar().setElevation(0);
+            //getSupportActionBar().setElevation(8);
             getSupportActionBar().setTitle(R.string.title_running);
         }
     }
@@ -157,6 +161,32 @@ public class MainActivity extends AppCompatActivity
                 .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out)
                 .replace(R.id.main_content, fragment)
                 .commit();
+    }
+
+    public void animateToolbar() {
+
+        int primary = ContextCompat.getColor(this, R.color.colorPrimary);
+        int bg = ContextCompat.getColor(this, R.color.help_background);
+
+        // Color animation
+        ObjectAnimator toolbarAnimatorIn = ObjectAnimator.ofObject(toolbar, "backgroundColor",
+                new ArgbEvaluator(), primary, bg)
+                .setDuration(400);
+        ObjectAnimator toolbarAnimatorOut = ObjectAnimator.ofObject(toolbar, "backgroundColor",
+                new ArgbEvaluator(), bg, primary)
+                .setDuration(400);
+        toolbarAnimatorOut.setStartDelay(AppParams.HELP_SHOW_DELAY);
+
+        AnimatorSet set = new AnimatorSet();
+        set.playSequentially(toolbarAnimatorIn, toolbarAnimatorOut);
+        set.start();
+    }
+
+    public void lockNavigationDrawer(boolean lock) {
+        int lockMode = lock
+                ? DrawerLayout.LOCK_MODE_LOCKED_CLOSED
+                : DrawerLayout.LOCK_MODE_UNLOCKED;
+        drawerLayout.setDrawerLockMode(lockMode);
     }
 
     @AfterPermissionGranted(REQ_CODE_PERM_CONTACTS)

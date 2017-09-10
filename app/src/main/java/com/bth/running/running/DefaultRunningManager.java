@@ -13,6 +13,7 @@ public class DefaultRunningManager implements RunningManager {
 
     private boolean isRecording;
     private Run run;
+    private Location prevLocation;
 
     public DefaultRunningManager() {
     }
@@ -21,6 +22,7 @@ public class DefaultRunningManager implements RunningManager {
     public void startRunRecording() {
         isRecording = true;
         run = new Run();
+        prevLocation = null;
     }
 
     @Override
@@ -31,6 +33,15 @@ public class DefaultRunningManager implements RunningManager {
 
     @Override
     public void updateCurrentRun(Location location) {
+        float distance = 0f;
+
+        if (prevLocation != null)
+        {
+            distance = prevLocation.distanceTo(location) / 1000f;
+        }
+
+        run.setDistance((double) distance + run.getDistance());
+        prevLocation = location;
         // TODO
     }
 

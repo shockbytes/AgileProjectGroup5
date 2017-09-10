@@ -11,11 +11,11 @@ public interface RunningManager {
 
     void startRunRecording();
 
-    void stopRunRecord();
+    void stopRunRecord(long timeInMs);
 
-    void updateCurrentRun(Location location);
+    Run updateCurrentRun(Location location);
 
-    double getDistanceCovered();
+    String getCurrentPace();
 
     Run getFinishedRun();
 

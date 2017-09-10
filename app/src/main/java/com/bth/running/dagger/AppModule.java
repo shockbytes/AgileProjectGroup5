@@ -37,7 +37,7 @@ public class AppModule {
     @Provides
     @Singleton
     public RunningManager provideRunningManager() {
-        return new DefaultRunningManager();
+        return new DefaultRunningManager(app.getApplicationContext());
     }
 
     @Provides

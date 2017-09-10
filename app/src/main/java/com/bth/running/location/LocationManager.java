@@ -10,7 +10,7 @@ import android.support.annotation.NonNull;
 
 public interface LocationManager {
 
-    public interface OnLocationUpdateListener {
+    interface OnLocationUpdateListener {
 
         void onConnected();
 
@@ -22,6 +22,12 @@ public interface LocationManager {
 
     }
 
+    // 1 seconds
+    long UPDATE_INTERVAL_IN_MILLISECONDS = 1000;
+
+    // Half of normal update time
+    long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
+            UPDATE_INTERVAL_IN_MILLISECONDS / 2;
 
     void start(@NonNull LocationManager.OnLocationUpdateListener listener);
 

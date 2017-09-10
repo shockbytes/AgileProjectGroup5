@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -29,6 +30,8 @@ import com.bth.running.location.LocationManager;
 import com.bth.running.running.Run;
 import com.bth.running.running.RunningManager;
 import com.bth.running.util.AppParams;
+import com.bth.running.util.ResourceManager;
+import com.bth.running.util.RunUtils;
 import com.bth.running.util.ViewManager;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -293,6 +296,36 @@ public class RunningFragment extends Fragment
         trackLine.setPoints(pointsSoFar);
     }
 
+    private void updateViews(Run run) {
+
+        long timeInMs = (SystemClock.elapsedRealtime() - chronometer.getBase());
+        String averagePace = RunUtils.calculatePace(timeInMs, run.getDistance());
+        String currentPace = runningManager.getCurrentPace();
+        double weight = PreferenceManager.getDefaultSharedPreferences(getContext())
+                .getFloat(getContext().getString(R.string.preferences_key_weight),
+                        getContext().getResources().getInteger(R.integer.preferences_def_weight));
+        int calories = RunUtils.calculateCaloriesBurned(run.getDistance(), weight);
+        txtDistance.setText(ResourceManager.roundDoubleWithDigits(run.getDistance(), 2) + " km");
+        txtAvgPace.setText(averagePace + "\nmin/km");
+
+        // TODO Enable this in next sprint
+        /*
+        txtCurrentPace.setText(currentPace + "\nmin/km");
+        txtCalories.setText(calories + "\nkcal");
+        */
+    }
+
+    private void clearViews() {
+
+        // Clear the text views
+        setupTextViews();
+        // Clear map
+        if (trackLine != null) {
+            trackLine.remove();
+            trackLine = null;
+        }
+    }
+
     private void animateStartingViews(boolean animateOut) {
 
         int alpha = animateOut ? 0 : 1;
@@ -304,13 +337,7 @@ public class RunningFragment extends Fragment
 
     private void startRun() {
 
-        // Clear the text views first
-        setupTextViews();
-        // Clear map also
-        if (trackLine != null) {
-            trackLine.remove();
-            trackLine = null;
-        }
+        clearViews();
 
         runningManager.startRunRecording();
         animateStartingViews(true);
@@ -324,13 +351,16 @@ public class RunningFragment extends Fragment
     private void stopRun() {
 
         animateStartingViews(false);
-        runningManager.stopRunRecord();
+        clearViews();
+
+        chronometer.stop();
+        long elapsedMillis = (SystemClock.elapsedRealtime() - chronometer.getBase());
+
+        runningManager.stopRunRecord(elapsedMillis);
         ((MainActivity) getActivity()).lockNavigationDrawer(false);
 
         Run run = runningManager.getFinishedRun();
 
-        chronometer.stop();
-        long elapsedSeconds = (SystemClock.elapsedRealtime() - chronometer.getBase()) / 60000;
 
         // TODO Show summary of run in new screen and store it in Realm
 
@@ -394,12 +424,9 @@ public class RunningFragment extends Fragment
         }
 
         if (runningManager.isRecording()) {
-
+            Run run = runningManager.updateCurrentRun(location);
+            updateViews(run);
             updateTrackOnMap(location);
-            runningManager.updateCurrentRun(location);
-
-            // TODO Update all views
-            txtDistance.setText(runningManager.getDistanceCovered() + " km");
         }
     }
 

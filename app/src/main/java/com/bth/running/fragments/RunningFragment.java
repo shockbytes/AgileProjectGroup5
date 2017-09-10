@@ -281,7 +281,6 @@ public class RunningFragment extends Fragment
     private void updateTrackOnMap(Location loc) {
 
         if (trackLine == null) {
-
             PolylineOptions lineOptions = new PolylineOptions()
                     .width(15)
                     .color(Color.parseColor("#03A9F4"));
@@ -304,6 +303,14 @@ public class RunningFragment extends Fragment
     }
 
     private void startRun() {
+
+        // Clear the text views first
+        setupTextViews();
+        // Clear map also
+        if (trackLine != null) {
+            trackLine.remove();
+            trackLine = null;
+        }
 
         runningManager.startRunRecording();
         animateStartingViews(true);

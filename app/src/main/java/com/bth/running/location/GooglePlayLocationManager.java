@@ -4,7 +4,6 @@ import android.content.Context;
 import android.location.Location;
 import android.os.Looper;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -76,7 +75,6 @@ public class GooglePlayLocationManager implements LocationManager {
             public void onLocationResult(LocationResult locationResult) {
 
                 currentLocation = locationResult.getLastLocation();
-                Log.wtf("Running", currentLocation.toString());
                 listener.onLocationUpdate(currentLocation);
             }
         };
@@ -119,7 +117,6 @@ public class GooglePlayLocationManager implements LocationManager {
     @Override
     public void stop() {
 
-        Log.wtf("Running", "Provider stopped sending location");
         fusedLocationClient.removeLocationUpdates(locationCallback)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override

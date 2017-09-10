@@ -5,92 +5,124 @@
     android:orientation="vertical"
     tools:context="com.bth.running.fragments.RunningFragment">
 
-    <LinearLayout
+    <FrameLayout
         android:id="@+id/fragment_running_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:elevation="8dp"
         android:minHeight="160dp"
-        android:orientation="vertical"
-        android:paddingBottom="16dp"
         android:paddingTop="0dp">
 
         <LinearLayout
+            android:alpha="0"
+            android:id="@+id/fragment_running_stop_help_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:weightSum="1">
+            android:layout_height="match_parent"
+            android:background="@color/help_background"
+            android:padding="24dp"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/fragment_running_txt_time"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:drawablePadding="8dp"
-                android:drawableTop="@drawable/ic_time"
+                android:text="@string/help_text"
                 android:gravity="center"
                 android:textColor="@android:color/white"
-                android:textSize="32sp" />
+                android:textSize="36sp" />
 
-            <TextView
-                android:id="@+id/fragment_running_txt_distance"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:drawablePadding="8dp"
-                android:drawableTop="@drawable/ic_distance"
-                android:gravity="center"
-                android:textColor="@android:color/white"
-                android:textSize="32sp" />
+            <ImageView
+                android:id="@+id/fragment_running_stop_help_imgview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@mipmap/ic_finger_click"/>
 
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/fragment_running_data_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:padding="8dp"
-            android:weightSum="1.2">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/fragment_running_txt_current_pace"
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.4"
-                android:drawablePadding="8dp"
-                android:drawableTop="@drawable/ic_pace"
-                android:gravity="center"
-                android:lines="2"
-                android:textColor="@android:color/white"
-                android:textSize="20sp" />
+                android:padding="8dp"
+                android:weightSum="1">
 
-            <TextView
-                android:id="@+id/fragment_running_txt_calories"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.4"
-                android:drawablePadding="8dp"
-                android:drawableTop="@drawable/ic_calories"
-                android:gravity="center"
-                android:textColor="@android:color/white"
-                android:textSize="20sp" />
+                <Chronometer
+                    android:id="@+id/fragment_running_txt_time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:drawablePadding="8dp"
+                    android:drawableTop="@drawable/ic_time"
+                    android:gravity="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="32sp" />
 
-            <TextView
-                android:id="@+id/fragment_running_txt_avg_pace"
-                android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/fragment_running_txt_distance"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:drawablePadding="8dp"
+                    android:drawableTop="@drawable/ic_distance"
+                    android:gravity="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="32sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.4"
-                android:drawablePadding="8dp"
-                android:drawableTop="@drawable/ic_average_pace"
-                android:gravity="center"
-                android:lines="2"
-                android:textColor="@android:color/white"
-                android:textSize="20sp" />
+                android:layout_marginTop="4dp"
+                android:padding="8dp"
+                android:weightSum="1.2">
+
+                <TextView
+                    android:id="@+id/fragment_running_txt_current_pace"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.4"
+                    android:drawablePadding="8dp"
+                    android:drawableTop="@drawable/ic_pace"
+                    android:gravity="center"
+                    android:lines="2"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/fragment_running_txt_calories"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.4"
+                    android:drawablePadding="8dp"
+                    android:drawableTop="@drawable/ic_calories"
+                    android:gravity="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/fragment_running_txt_avg_pace"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.4"
+                    android:drawablePadding="8dp"
+                    android:drawableTop="@drawable/ic_average_pace"
+                    android:gravity="center"
+                    android:lines="2"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
+
+    </FrameLayout>
 
     <FrameLayout
         android:layout_width="match_parent"

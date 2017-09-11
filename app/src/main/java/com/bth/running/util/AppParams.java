@@ -8,5 +8,6 @@ package com.bth.running.util;
 public class AppParams {
 
     public static final int HELP_SHOW_DELAY = 2000;
+    public static final int LOCATIONS_FOR_CURRENT_PACE = 10;
 
 }

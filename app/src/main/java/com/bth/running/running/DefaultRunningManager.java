@@ -1,8 +1,12 @@
 package com.bth.running.running;
 
+import android.content.Context;
 import android.location.Location;
+import android.preference.PreferenceManager;
 
-import com.bth.running.util.ResourceManager;
+import com.bth.running.R;
+import com.bth.running.util.AppParams;
+import com.bth.running.util.RunUtils;
 
 /**
  * @author Martin Macheiner
@@ -14,8 +18,10 @@ public class DefaultRunningManager implements RunningManager {
     private boolean isRecording;
     private Run run;
     private Location prevLocation;
+    private Context context;
 
-    public DefaultRunningManager() {
+    public DefaultRunningManager(Context context) {
+        this.context = context;
     }
 
     @Override
@@ -26,28 +32,41 @@ public class DefaultRunningManager implements RunningManager {
     }
 
     @Override
-    public void stopRunRecord() {
+    public void stopRunRecord(long timeInMs) {
         isRecording = false;
-        // TODO
+
+        run.setTime(timeInMs);
+        run.setAvgPace(RunUtils.calculatePace(timeInMs, run.getDistance()));
+        double weight = PreferenceManager.getDefaultSharedPreferences(context)
+                .getFloat(context.getString(R.string.preferences_key_weight),
+                        context.getResources().getInteger(R.integer.preferences_def_weight));
+        run.setCalories(RunUtils.calculateCaloriesBurned(run.getDistance(), weight));
+        run.convertLocationsToRealmList();
     }
 
     @Override
-    public void updateCurrentRun(Location location) {
+    public Run updateCurrentRun(Location location) {
         float distance = 0f;
 
-        if (prevLocation != null)
-        {
+        if (prevLocation != null) {
             distance = prevLocation.distanceTo(location) / 1000f;
         }
 
         run.setDistance((double) distance + run.getDistance());
+        run.addLocation(location);
         prevLocation = location;
-        // TODO
+
+        return run;
     }
 
     @Override
-    public double getDistanceCovered() {
-        return ResourceManager.roundDoubleWithDigits(run.getDistance(), 2);
+    public String getCurrentPace() {
+
+
+        double distance = run.getCurrentPaceDistance();
+        long timeInMs = run.getCurrentPaceTime();
+
+        return RunUtils.calculatePace(timeInMs, distance);
     }
 
     @Override

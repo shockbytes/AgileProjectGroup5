@@ -25,13 +25,6 @@ import com.google.android.gms.tasks.Task;
 
 public class GooglePlayLocationManager implements LocationManager {
 
-    // 5 seconds
-    private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 1000;
-
-    // Half of normal update time
-    private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS =
-            UPDATE_INTERVAL_IN_MILLISECONDS / 2;
-
     private FusedLocationProviderClient fusedLocationClient;
     private SettingsClient settingsClient;
     private LocationRequest locationRequest;

@@ -6,6 +6,8 @@ import com.bth.running.dagger.AppComponent;
 import com.bth.running.dagger.AppModule;
 import com.bth.running.dagger.DaggerAppComponent;
 
+import net.danlew.android.joda.JodaTimeAndroid;
+
 /**
  * @author Martin Macheiner
  *         Date: 05.09.2017.
@@ -18,6 +20,8 @@ public class RunningApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        JodaTimeAndroid.init(this);
 
         appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))

@@ -29,6 +29,7 @@ import com.bth.running.core.RunningApp;
 import com.bth.running.location.LocationManager;
 import com.bth.running.running.Run;
 import com.bth.running.running.RunningManager;
+import com.bth.running.storage.StorageManager;
 import com.bth.running.util.AppParams;
 import com.bth.running.util.ResourceManager;
 import com.bth.running.util.RunUtils;
@@ -80,6 +81,9 @@ public class RunningFragment extends Fragment
     @Inject
     protected RunningManager runningManager;
 
+    @Inject
+    protected StorageManager storageManager;
+
     @Bind(R.id.fragment_running_header)
     protected View headerView;
 
@@ -120,8 +124,6 @@ public class RunningFragment extends Fragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((RunningApp) getActivity().getApplication()).getAppComponent().inject(this);
-        showMapFragment();
-        isFirstLocation = true;
     }
 
     @Override
@@ -137,6 +139,12 @@ public class RunningFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
         setupTextViews();
         setupHeaderGestureRecognizer();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        showMapFragment();
     }
 
     @Override
@@ -191,6 +199,7 @@ public class RunningFragment extends Fragment
     }
 
     private void showMapFragment() {
+        isFirstLocation = true;
 
         SupportMapFragment mapFragment = new SupportMapFragment();
         getFragmentManager().beginTransaction()
@@ -308,7 +317,7 @@ public class RunningFragment extends Fragment
         txtDistance.setText(ResourceManager.roundDoubleWithDigits(run.getDistance(), 2) + " km");
         txtAvgPace.setText(averagePace + "\nmin/km");
 
-        // TODO Enable this in next sprint
+        // TODO Enable in next Sprint
         /*
         txtCurrentPace.setText(currentPace + "\nmin/km");
         txtCalories.setText(calories + "\nkcal");
@@ -360,10 +369,17 @@ public class RunningFragment extends Fragment
         ((MainActivity) getActivity()).lockNavigationDrawer(false);
 
         Run run = runningManager.getFinishedRun();
+        storageManager.storeRun(run);
+        showDetailFragment(run);
+    }
 
-
-        // TODO Show summary of run in new screen and store it in Realm
-
+    private void showDetailFragment(Run run) {
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
+                        android.R.anim.fade_in, android.R.anim.fade_out)
+                .replace(R.id.main_content, HistoryDetailFragment.newInstance(run))
+                .addToBackStack(null)
+                .commit();
     }
 
     @OnClick(R.id.fragment_running_btn_start)
@@ -380,7 +396,6 @@ public class RunningFragment extends Fragment
 
     @Override
     public void onDisconnected() {
-
     }
 
     @Override

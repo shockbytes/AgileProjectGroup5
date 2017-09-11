@@ -1,5 +1,6 @@
 package com.bth.running.dagger;
 
+import com.bth.running.fragments.HistoryFragment;
 import com.bth.running.fragments.RunningFragment;
 
 import javax.inject.Singleton;
@@ -16,5 +17,7 @@ import dagger.Component;
 public interface AppComponent {
 
     void inject(RunningFragment fragment);
+
+    void inject(HistoryFragment fragment);
 
 }

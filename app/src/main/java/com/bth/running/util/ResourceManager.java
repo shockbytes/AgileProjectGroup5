@@ -24,6 +24,9 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.AppCompatDrawableManager;
 import android.util.TypedValue;
 
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -173,6 +176,17 @@ public class ResourceManager {
         dr.setAntiAlias(true);
         dr.setDither(false);
         return dr;
+    }
+
+    public static PeriodFormatter getPeriodFormatter() {
+        return new PeriodFormatterBuilder()
+                .minimumPrintedDigits(2)
+                .appendHours()
+                .appendSeparator(":")
+                .appendMinutes()
+                .appendSeparator(":")
+                .appendSeconds()
+                .toFormatter();
     }
 
     public static double roundDoubleWithDigits(double value, int digits) {

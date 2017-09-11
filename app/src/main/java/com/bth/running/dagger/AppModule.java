@@ -8,11 +8,16 @@ import com.bth.running.location.GooglePlayLocationManager;
 import com.bth.running.location.LocationManager;
 import com.bth.running.running.DefaultRunningManager;
 import com.bth.running.running.RunningManager;
+import com.bth.running.storage.RealmStorageManager;
+import com.bth.running.storage.StorageManager;
+import com.bth.running.util.AppParams;
 
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 
 /**
  * @author Martin Macheiner
@@ -44,6 +49,21 @@ public class AppModule {
     @Singleton
     public LocationManager provideLocationManager() {
         return new GooglePlayLocationManager(app.getApplicationContext());
+    }
+
+    @Provides
+    @Singleton
+    public Realm provideRealm() {
+        RealmConfiguration config = new RealmConfiguration.Builder()
+                .schemaVersion(AppParams.REALM_SCHEMA_VERSION)
+                .build();
+         return Realm.getInstance(config);
+    }
+
+    @Provides
+    @Singleton
+    public StorageManager provideStorageManager(Realm realm) {
+        return new RealmStorageManager(realm);
     }
 
 }

@@ -5,7 +5,6 @@ import android.location.Location;
 import android.preference.PreferenceManager;
 
 import com.bth.running.R;
-import com.bth.running.util.AppParams;
 import com.bth.running.util.RunUtils;
 
 /**
@@ -27,7 +26,7 @@ public class DefaultRunningManager implements RunningManager {
     @Override
     public void startRunRecording() {
         isRecording = true;
-        run = new Run();
+        run = new Run(System.currentTimeMillis());
         prevLocation = null;
     }
 

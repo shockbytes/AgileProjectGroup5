@@ -4,4 +4,7 @@
     <color name="colorPrimaryDark">#689F38</color>
     <color name="colorAccent">#FF9800</color>
     <color name="help_background">#DD212121</color>
+
+    <color name="run_detailed_icon_tint">#424242</color>
+
 </resources>

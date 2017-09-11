@@ -2,11 +2,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="8dp"
+    android:background="#eee"
     tools:context="com.bth.running.fragments.HistoryFragment">
 
     <TextView
+        android:id="@+id/fragment_history_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:alpha="0"
+        android:drawableTop="@drawable/ic_no_runs"
+        android:gravity="center"
+        android:padding="24dp"
+        android:text="You haven't recorded a run"
+        android:textColor="@android:color/primary_text_light"
+        android:textSize="36sp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/fragment_history_rv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="History Fragment" />
+        android:layout_height="match_parent" />
 
 </FrameLayout>

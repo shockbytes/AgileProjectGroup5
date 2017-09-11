@@ -1,0 +1,119 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#eee"
+    android:orientation="vertical"
+    android:padding="0dp"
+    tools:context="com.bth.running.fragments.HistoryDetailFragment">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/fragment_detail_history_btn_close"
+        android:layout_margin="8dp"
+        android:transitionName="item_run_card">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:id="@+id/fragment_detail_history_map_container"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:minHeight="200dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/fragment_history_detail_txt_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="4dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:weightSum="1">
+
+                    <TextView
+                        android:id="@+id/fragment_history_detail_txt_time"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:drawablePadding="8dp"
+                        android:drawableTop="@drawable/ic_time"
+                        android:gravity="center"
+                        android:textColor="@android:color/primary_text_light"
+                        android:textSize="32sp" />
+
+                    <TextView
+                        android:id="@+id/fragment_history_detail_txt_distance"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:drawablePadding="8dp"
+                        android:drawableTop="@drawable/ic_distance"
+                        android:gravity="center"
+                        android:textColor="@android:color/primary_text_light"
+                        android:textSize="32sp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:padding="8dp"
+                    android:weightSum="1">
+
+                    <TextView
+                        android:id="@+id/fragment_history_detail_txt_calories"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:drawablePadding="8dp"
+                        android:drawableTop="@drawable/ic_calories"
+                        android:gravity="center"
+                        android:textColor="@android:color/secondary_text_light"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/fragment_history_detail_txt_avg_pace"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:drawablePadding="8dp"
+                        android:drawableTop="@drawable/ic_average_pace"
+                        android:gravity="center"
+                        android:textColor="@android:color/secondary_text_light"
+                        android:textSize="20sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/fragment_detail_history_btn_close"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:backgroundTint="@color/colorAccent"
+        android:textColor="@android:color/white"
+        android:padding="12dp"
+        android:text="Close" />
+
+</RelativeLayout>

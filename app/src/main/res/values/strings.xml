@@ -11,5 +11,9 @@
     <string name="start_run">START RUN</string>
     <string name="help_text">Double tap to stop run</string>
     <string name="preferences_key_weight">preferences_key_weight</string>
+    <string name="preferences_key_height">preferences_key_height</string>
+    <string name="coach_body_header">Body information</string>
+    <string name="coach_body_weight">Weight • kg</string>
+    <string name="coach_body_height">Height • cm</string>
 
 </resources>

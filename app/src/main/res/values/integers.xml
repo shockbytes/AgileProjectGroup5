@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="preferences_def_weight">80</integer>
+    <integer name="preferences_def_height">180</integer>
 </resources>

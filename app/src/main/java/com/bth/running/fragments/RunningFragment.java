@@ -316,12 +316,8 @@ public class RunningFragment extends Fragment
         int calories = RunUtils.calculateCaloriesBurned(run.getDistance(), weight);
         txtDistance.setText(ResourceManager.roundDoubleWithDigits(run.getDistance(), 2) + " km");
         txtAvgPace.setText(averagePace + "\nmin/km");
-
-        // TODO Enable in next Sprint
-        /*
         txtCurrentPace.setText(currentPace + "\nmin/km");
         txtCalories.setText(calories + "\nkcal");
-        */
     }
 
     private void clearViews() {

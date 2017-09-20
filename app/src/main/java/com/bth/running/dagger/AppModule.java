@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.bth.running.coaching.Coach;
+import com.bth.running.coaching.DefaultCoach;
 import com.bth.running.location.GooglePlayLocationManager;
 import com.bth.running.location.LocationManager;
 import com.bth.running.running.DefaultRunningManager;
@@ -41,8 +43,8 @@ public class AppModule {
 
     @Provides
     @Singleton
-    public RunningManager provideRunningManager() {
-        return new DefaultRunningManager(app.getApplicationContext());
+    public RunningManager provideRunningManager(Coach coach) {
+        return new DefaultRunningManager(app.getApplicationContext(), coach);
     }
 
     @Provides
@@ -64,6 +66,12 @@ public class AppModule {
     @Singleton
     public StorageManager provideStorageManager(Realm realm) {
         return new RealmStorageManager(realm);
+    }
+
+    @Provides
+    @Singleton
+    public Coach provideCoach(SharedPreferences preferences) {
+        return new DefaultCoach(app.getApplicationContext(), preferences);
     }
 
 }

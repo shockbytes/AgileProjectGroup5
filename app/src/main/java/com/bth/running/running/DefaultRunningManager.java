@@ -2,9 +2,8 @@ package com.bth.running.running;
 
 import android.content.Context;
 import android.location.Location;
-import android.preference.PreferenceManager;
 
-import com.bth.running.R;
+import com.bth.running.coaching.Coach;
 import com.bth.running.util.RunUtils;
 
 /**
@@ -18,9 +17,11 @@ public class DefaultRunningManager implements RunningManager {
     private Run run;
     private Location prevLocation;
     private Context context;
+    private Coach coach;
 
-    public DefaultRunningManager(Context context) {
+    public DefaultRunningManager(Context context, Coach coach) {
         this.context = context;
+        this.coach = coach;
     }
 
     @Override
@@ -36,9 +37,7 @@ public class DefaultRunningManager implements RunningManager {
 
         run.setTime(timeInMs);
         run.setAvgPace(RunUtils.calculatePace(timeInMs, run.getDistance()));
-        double weight = PreferenceManager.getDefaultSharedPreferences(context)
-                .getFloat(context.getString(R.string.preferences_key_weight),
-                        context.getResources().getInteger(R.integer.preferences_def_weight));
+        double weight = coach.getUserWeight();
         run.setCalories(RunUtils.calculateCaloriesBurned(run.getDistance(), weight));
         run.convertLocationsToRealmList();
     }

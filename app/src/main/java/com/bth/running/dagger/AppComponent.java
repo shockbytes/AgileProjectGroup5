@@ -1,5 +1,6 @@
 package com.bth.running.dagger;
 
+import com.bth.running.fragments.CoachFragment;
 import com.bth.running.fragments.HistoryFragment;
 import com.bth.running.fragments.RunningFragment;
 
@@ -19,5 +20,7 @@ public interface AppComponent {
     void inject(RunningFragment fragment);
 
     void inject(HistoryFragment fragment);
+
+    void inject(CoachFragment fragment);
 
 }

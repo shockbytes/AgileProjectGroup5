@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.bth.running.R;
 import com.bth.running.fragments.CoachFragment;
+import com.bth.running.fragments.HistoryFragment;
 import com.bth.running.fragments.RunningFragment;
 import com.bth.running.util.AppParams;
 import com.bth.running.util.ResourceManager;
@@ -97,8 +98,7 @@ public class MainActivity extends AppCompatActivity
             case R.id.menu_navigation_history:
 
                 toolbar.setTitle(R.string.title_history);
-                // TODO Enable in next Sprint
-                //showFragment(HistoryFragment.newInstance());
+                showFragment(HistoryFragment.newInstance());
                 break;
 
             case R.id.menu_navigation_settings:

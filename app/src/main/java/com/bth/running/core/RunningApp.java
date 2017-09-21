@@ -5,6 +5,7 @@ import android.app.Application;
 import com.bth.running.dagger.AppComponent;
 import com.bth.running.dagger.AppModule;
 import com.bth.running.dagger.DaggerAppComponent;
+import com.bth.running.dagger.NetworkModule;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -28,6 +29,7 @@ public class RunningApp extends Application {
 
         appComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
+                .networkModule(new NetworkModule(this))
                 .build();
     }
 

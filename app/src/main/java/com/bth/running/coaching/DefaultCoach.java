@@ -4,6 +4,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.bth.running.R;
+import com.bth.running.weather.WeatherApi;
+import com.bth.running.weather.model.Weather;
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * @author Martin Macheiner
@@ -14,10 +20,19 @@ public class DefaultCoach implements Coach {
 
     private Context context;
     private SharedPreferences preferences;
+    private WeatherApi weatherApi;
 
-    public DefaultCoach(Context context, SharedPreferences preferences) {
+    public DefaultCoach(Context context, SharedPreferences preferences, WeatherApi weatherApi) {
         this.context = context;
         this.preferences = preferences;
+        this.weatherApi = weatherApi;
+    }
+
+    @Override
+    public Observable<Weather> getWeatherForecast(String place) {
+        return weatherApi.getWeatherForecast(place, WeatherApi.API_KEY, "metric")
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +14,15 @@ import android.widget.EditText;
 import com.bth.running.R;
 import com.bth.running.coaching.Coach;
 import com.bth.running.core.RunningApp;
+import com.bth.running.location.LocationManager;
+import com.bth.running.weather.model.Weather;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.functions.Action1;
 
 public class CoachFragment extends Fragment {
 
@@ -32,11 +36,16 @@ public class CoachFragment extends Fragment {
     @Inject
     protected Coach coach;
 
+    @Inject
+    protected LocationManager locationManager;
+
     @Bind(R.id.fragment_coach_body_edit_height)
     protected EditText editHeight;
 
     @Bind(R.id.fragment_coach_body_edit_weight)
     protected EditText editWeight;
+
+
 
     public CoachFragment() {
         // Required empty public constructor
@@ -60,6 +69,7 @@ public class CoachFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setupViews();
+        loadWeather();
     }
 
     @Override
@@ -86,6 +96,37 @@ public class CoachFragment extends Fragment {
     private void setupViews() {
         editWeight.setText(String.valueOf(coach.getUserWeight()));
         editHeight.setText(String.valueOf(coach.getUserHeight()));
+    }
+
+    private void setupWeatherView(Weather weather) {
+
+        // TODO
+    }
+
+    private void loadWeather() {
+
+        try {
+            String address = locationManager.getLocationName();
+            Log.wtf("Running", "Address: " + address);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // TODO Do not hardcode String
+        coach.getWeatherForecast("Karlskrona").subscribe(new Action1<Weather>() {
+            @Override
+            public void call(Weather weather) {
+                weather.compress();
+                setupWeatherView(weather);
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+
+                throwable.printStackTrace();
+                Snackbar.make(getView(), "Cannot load weather", Snackbar.LENGTH_LONG).show();
+            }
+        });
     }
 
 }

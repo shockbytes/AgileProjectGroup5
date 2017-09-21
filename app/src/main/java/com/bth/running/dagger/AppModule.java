@@ -13,6 +13,7 @@ import com.bth.running.running.RunningManager;
 import com.bth.running.storage.RealmStorageManager;
 import com.bth.running.storage.StorageManager;
 import com.bth.running.util.AppParams;
+import com.bth.running.weather.WeatherApi;
 
 import javax.inject.Singleton;
 
@@ -70,8 +71,8 @@ public class AppModule {
 
     @Provides
     @Singleton
-    public Coach provideCoach(SharedPreferences preferences) {
-        return new DefaultCoach(app.getApplicationContext(), preferences);
+    public Coach provideCoach(SharedPreferences preferences, WeatherApi api) {
+        return new DefaultCoach(app.getApplicationContext(), preferences, api);
     }
 
 }

@@ -17,4 +17,7 @@
     <string name="coach_body_height">Height • cm</string>
     <string name="coach_weather_header">Weather</string>
 
+    <string name="weather_temperature">%d°C</string>
+    <string name="weather_icon_url">http://openweathermap.org/img/w/%s.png</string>
+
 </resources>

@@ -1,86 +1,157 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#eee"
-    android:orientation="vertical"
-    android:padding="16dp"
-    tools:context="com.bth.running.fragments.CoachFragment">
+    android:background="#eee">
 
-    <android.support.v7.widget.CardView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        tools:context="com.bth.running.fragments.CoachFragment">
 
-        <LinearLayout
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:layout_height="wrap_content">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:drawableLeft="@drawable/ic_body"
-                android:drawablePadding="16dp"
-                android:drawableStart="@drawable/ic_body"
-                android:gravity="center_vertical"
-                android:text="@string/coach_body_header"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+                android:orientation="vertical"
+                android:padding="16dp">
 
-            <TextView
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:drawableLeft="@drawable/ic_weather"
+                    android:drawablePadding="16dp"
+                    android:drawableStart="@drawable/ic_weather"
+                    android:gravity="center_vertical"
+                    android:text="@string/coach_weather_header"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_weight="0.2"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:text="Th"
+                            android:id="@+id/fragment_coach_weather_day_1_txt_day"
+                            android:gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <ImageView
+                            android:id="@+id/fragment_coach_weather_day_1_img"
+                            android:layout_marginTop="4dp"
+                            android:layout_marginBottom="4dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:minHeight="32dp"
+                            app:srcCompat="@drawable/ic_image_placeholder" />
+
+                        <TextView
+                            android:text="29°C"
+                            android:id="@+id/fragment_coach_weather_day_1_txt_temp"
+                            android:textColor="@android:color/primary_text_light"
+                            android:gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-light"
-                android:text="@string/coach_body_weight"
-                android:textSize="22sp" />
+                android:orientation="vertical"
+                android:padding="16dp">
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:drawableLeft="@drawable/ic_body"
+                    android:drawablePadding="16dp"
+                    android:drawableStart="@drawable/ic_body"
+                    android:gravity="center_vertical"
+                    android:text="@string/coach_body_header"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
-            <EditText
-                android:id="@+id/fragment_coach_body_edit_weight"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:imeOptions="actionNext"
-                android:inputType="numberDecimal"
-                android:maxLines="1"
-                android:paddingTop="12dp"
-                android:paddingBottom="12dp"
-                android:textSize="24sp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
+                    android:text="@string/coach_body_weight"
+                    android:textSize="22sp" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-light"
-                android:text="@string/coach_body_height"
-                android:textSize="22sp" />
+                <EditText
+                    android:id="@+id/fragment_coach_body_edit_weight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:imeOptions="actionNext"
+                    android:inputType="numberDecimal"
+                    android:maxLines="1"
+                    android:paddingBottom="12dp"
+                    android:paddingTop="12dp"
+                    android:textSize="24sp" />
 
-            <EditText
-                android:id="@+id/fragment_coach_body_edit_height"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:imeOptions="actionDone"
-                android:inputType="number"
-                android:maxLines="1"
-                android:paddingTop="12dp"
-                android:paddingBottom="12dp"
-                android:textSize="24sp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-light"
+                    android:text="@string/coach_body_height"
+                    android:textSize="22sp" />
 
-            <android.support.v7.widget.AppCompatButton
-                android:id="@+id/fragment_coach_body_btn_update"
-                style="?android:borderlessButtonStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Update"
-                android:padding="16dp"
-                android:layout_gravity="end|right" />
+                <EditText
+                    android:id="@+id/fragment_coach_body_edit_height"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:imeOptions="actionDone"
+                    android:inputType="number"
+                    android:maxLines="1"
+                    android:paddingBottom="12dp"
+                    android:paddingTop="12dp"
+                    android:textSize="24sp" />
 
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/fragment_coach_body_btn_update"
+                    style="?android:borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|right"
+                    android:padding="16dp"
+                    android:text="Update" />
 
-        </LinearLayout>
+            </LinearLayout>
 
+        </android.support.v7.widget.CardView>
 
-    </android.support.v7.widget.CardView>
+    </LinearLayout>
 
-</LinearLayout>
+</ScrollView>

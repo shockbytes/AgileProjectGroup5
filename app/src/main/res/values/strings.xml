@@ -15,5 +15,6 @@
     <string name="coach_body_header">Body information</string>
     <string name="coach_body_weight">Weight • kg</string>
     <string name="coach_body_height">Height • cm</string>
+    <string name="coach_weather_header">Weather</string>
 
 </resources>

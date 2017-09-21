@@ -1,6 +1,7 @@
 package com.bth.running.location;
 
 import android.content.Context;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -37,9 +38,12 @@ public class GooglePlayLocationManager implements LocationManager {
 
     private OnLocationUpdateListener listener;
 
+    private Geocoder geocoder;
+
     public GooglePlayLocationManager(Context context) {
         initialize(context);
         isLocationUpdateRequested = false;
+        geocoder = new Geocoder(context);
     }
 
     private void initialize(Context context) {
@@ -125,6 +129,17 @@ public class GooglePlayLocationManager implements LocationManager {
     @Override
     public boolean isLocationUpdateRequested() {
         return isLocationUpdateRequested;
+    }
+
+    @SuppressWarnings("MissingPermission")
+    @Override
+    public String getLocationName() throws Exception {
+        return geocoder.getFromLocation(
+                fusedLocationClient.getLastLocation().getResult().getLatitude(),
+                fusedLocationClient.getLastLocation().getResult().getLongitude(),
+                1)
+                .get(0)
+                .getAddressLine(0);
     }
 
 }

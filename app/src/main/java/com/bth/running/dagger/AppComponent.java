@@ -14,7 +14,7 @@ import dagger.Component;
  */
 
 @Singleton
-@Component(modules = {AppModule.class})
+@Component(modules = {AppModule.class, NetworkModule.class})
 public interface AppComponent {
 
     void inject(RunningFragment fragment);

@@ -1,7 +1,7 @@
 package com.bth.running.location;
 
+import android.app.Activity;
 import android.content.Context;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -18,6 +18,8 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+
+import java.util.concurrent.ExecutorService;
 
 /**
  * @author Martin Macheiner
@@ -38,12 +40,9 @@ public class GooglePlayLocationManager implements LocationManager {
 
     private OnLocationUpdateListener listener;
 
-    private Geocoder geocoder;
-
     public GooglePlayLocationManager(Context context) {
         initialize(context);
         isLocationUpdateRequested = false;
-        geocoder = new Geocoder(context);
     }
 
     private void initialize(Context context) {
@@ -133,13 +132,8 @@ public class GooglePlayLocationManager implements LocationManager {
 
     @SuppressWarnings("MissingPermission")
     @Override
-    public String getLocationName() throws Exception {
-        return geocoder.getFromLocation(
-                fusedLocationClient.getLastLocation().getResult().getLatitude(),
-                fusedLocationClient.getLastLocation().getResult().getLongitude(),
-                1)
-                .get(0)
-                .getAddressLine(0);
+    public void subscribeForLastLocationCallback(OnCompleteListener<Location> listener) {
+        fusedLocationClient.getLastLocation().addOnCompleteListener(listener);
     }
 
 }

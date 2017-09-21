@@ -30,6 +30,9 @@ import org.joda.time.format.PeriodFormatterBuilder;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * @author Martin Macheiner
@@ -201,6 +204,12 @@ public class ResourceManager {
         BigDecimal bd = new BigDecimal(value);
         bd = bd.setScale(digits, RoundingMode.HALF_UP);
         return bd.doubleValue();
+    }
+
+    public static String getDayOfWeekAbbr(long date) {
+        Locale locale = Locale.US;
+        SimpleDateFormat format2 = new SimpleDateFormat("EE", locale);
+        return format2.format(new Date(date)).toUpperCase(locale);
     }
 
 }

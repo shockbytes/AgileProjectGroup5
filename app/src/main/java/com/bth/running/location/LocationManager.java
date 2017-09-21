@@ -3,6 +3,8 @@ package com.bth.running.location;
 import android.location.Location;
 import android.support.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+
 /**
  * @author Martin Macheiner
  *         Date: 05.09.2017.
@@ -35,6 +37,6 @@ public interface LocationManager {
 
     boolean isLocationUpdateRequested();
 
-    String getLocationName() throws Exception;
+    void subscribeForLastLocationCallback(OnCompleteListener<Location> listener);
 
 }

@@ -13,6 +13,8 @@ import org.joda.time.format.PeriodFormatterBuilder;
 
 public class RunUtils {
 
+    private static final double METS_5_30_PACE = 12.8;
+
     public static String calculatePace(long timeInMs, double distance) {
 
         if (distance <= 0) {
@@ -22,8 +24,10 @@ public class RunUtils {
         return formatPaceMillisToString(kmMillis);
     }
 
-    public static int calculateCaloriesBurned(double distance, double weightOfRunner) {
-        double burned = distance * weightOfRunner * 1.036;
+    public static int calculateCaloriesBurned(double runningTimeInMillis, double weightOfRunner) {
+        //double burned = distance * weightOfRunner * 1.036;
+        double runningTimeInHours = runningTimeInMillis / 3600000d;
+        double burned = METS_5_30_PACE * weightOfRunner * runningTimeInHours;
         return (int) Math.floor(burned);
     }
 

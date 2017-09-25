@@ -38,7 +38,7 @@ public class DefaultRunningManager implements RunningManager {
         run.setTime(timeInMs);
         run.setAvgPace(RunUtils.calculatePace(timeInMs, run.getDistance()));
         double weight = coach.getUserWeight();
-        run.setCalories(RunUtils.calculateCaloriesBurned(run.getDistance(), weight));
+        run.setCalories(RunUtils.calculateCaloriesBurned(timeInMs, weight));
         run.convertLocationsToRealmList();
     }
 

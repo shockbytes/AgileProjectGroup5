@@ -313,7 +313,7 @@ public class RunningFragment extends Fragment
         double weight = PreferenceManager.getDefaultSharedPreferences(getContext())
                 .getFloat(getContext().getString(R.string.preferences_key_weight),
                         getContext().getResources().getInteger(R.integer.preferences_def_weight));
-        int calories = RunUtils.calculateCaloriesBurned(run.getDistance(), weight);
+        int calories = RunUtils.calculateCaloriesBurned(timeInMs, weight);
         txtDistance.setText(ResourceManager.roundDoubleWithDigits(run.getDistance(), 2) + " km");
         txtAvgPace.setText(averagePace + "\nmin/km");
         txtCurrentPace.setText(currentPace + "\nmin/km");

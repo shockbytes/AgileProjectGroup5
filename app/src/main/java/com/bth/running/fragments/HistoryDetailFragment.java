@@ -112,39 +112,41 @@ public class HistoryDetailFragment extends Fragment implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-        PolylineOptions lineOptions = new PolylineOptions()
-                .width(15)
-                .color(Color.parseColor("#03A9F4"));
+        if (run.getRealmLocations() != null && run.getRealmLocations().size() > 0) {
 
-        LatLngBounds.Builder b = LatLngBounds.builder();
-        for (RealmLatLng rll : run.getRealmLocations()) {
-            LatLng tmp = new LatLng(rll.lat, rll.lng);
-            b.include(tmp);
-            lineOptions.add(tmp);
+            PolylineOptions lineOptions = new PolylineOptions()
+                    .width(15)
+                    .color(Color.parseColor("#03A9F4"));
+
+            LatLngBounds.Builder b = LatLngBounds.builder();
+            for (RealmLatLng rll : run.getRealmLocations()) {
+                LatLng tmp = new LatLng(rll.lat, rll.lng);
+                b.include(tmp);
+                lineOptions.add(tmp);
+            }
+            googleMap.addPolyline(lineOptions);
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(b.build(), 100));
+
+            BitmapDescriptor iconStart = getMarkerIconFromDrawable(
+                    ContextCompat.getDrawable(getContext(), R.drawable.ic_marker_start));
+            MarkerOptions startMarker = new MarkerOptions()
+                    .draggable(false)
+                    .title("Start")
+                    .icon(iconStart)
+                    .flat(true)
+                    .position(run.getStartLatLng());
+            googleMap.addMarker(startMarker);
+
+            BitmapDescriptor iconEnd = getMarkerIconFromDrawable(
+                    ContextCompat.getDrawable(getContext(), R.drawable.ic_marker_goal));
+            MarkerOptions endMarker = new MarkerOptions()
+                    .draggable(false)
+                    .title("Finish")
+                    .icon(iconEnd)
+                    .flat(true)
+                    .position(run.getLastLatLng());
+            googleMap.addMarker(endMarker);
         }
-
-        BitmapDescriptor iconStart = getMarkerIconFromDrawable(
-                ContextCompat.getDrawable(getContext(), R.drawable.ic_marker_start));
-        MarkerOptions startMarker = new MarkerOptions()
-                .draggable(false)
-                .title("Start")
-                .icon(iconStart)
-                .flat(true)
-                .position(run.getStartLatLng());
-
-        BitmapDescriptor iconEnd = getMarkerIconFromDrawable(
-                ContextCompat.getDrawable(getContext(), R.drawable.ic_marker_goal));
-        MarkerOptions endMarker = new MarkerOptions()
-                .draggable(false)
-                .title("Finish")
-                .icon(iconEnd)
-                .flat(true)
-                .position(run.getLastLatLng());
-
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(b.build(), 100));
-        googleMap.addPolyline(lineOptions);
-        googleMap.addMarker(startMarker);
-        googleMap.addMarker(endMarker);
     }
 
     @OnClick(R.id.fragment_detail_history_btn_close)

@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -24,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bth.running.R;
+import com.bth.running.coaching.Coach;
 import com.bth.running.core.MainActivity;
 import com.bth.running.core.RunningApp;
 import com.bth.running.location.LocationManager;
@@ -57,7 +57,16 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 
 public class RunningFragment extends Fragment
-        implements OnMapReadyCallback, LocationManager.OnLocationUpdateListener, GestureDetector.OnDoubleTapListener {
+        implements OnMapReadyCallback, LocationManager.OnLocationUpdateListener,
+        GestureDetector.OnDoubleTapListener {
+
+    private enum HeaderState {
+        NORMAL, TIME_UPFRONT, DISTANCE_UPFRONT
+    }
+
+    private enum SwipeDirection {
+        LEFT, RIGHT
+    }
 
     private static final int REQ_CODE_PERM_LOCATION = 0x1245;
     private static final int REQUEST_CHECK_SETTINGS = 0x9874;
@@ -73,7 +82,12 @@ public class RunningFragment extends Fragment
     private Polyline trackLine;
     private boolean isFirstLocation;
 
+    private HeaderState headerState;
+
     private GestureDetectorCompat gestureDetector;
+
+    @Inject
+    protected Coach coach;
 
     @Inject
     protected LocationManager locationManager;
@@ -124,6 +138,7 @@ public class RunningFragment extends Fragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((RunningApp) getActivity().getApplication()).getAppComponent().inject(this);
+        headerState = HeaderState.NORMAL;
     }
 
     @Override
@@ -238,8 +253,16 @@ public class RunningFragment extends Fragment
                     }
 
                     @Override
-                    public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-                        return false;
+                    public boolean onFling(MotionEvent downEvent, MotionEvent upEvent, float vx, float vy) {
+
+                        float directionX = downEvent.getX() - upEvent.getX();
+                        if (Math.abs(directionX) > 200) {
+                            SwipeDirection direction = (directionX > 0)
+                                    ? SwipeDirection.LEFT
+                                    : SwipeDirection.RIGHT;
+                            animateTimeDistanceHeader(direction);
+                        }
+                        return true;
                     }
                 });
         gestureDetector.setOnDoubleTapListener(this);
@@ -310,10 +333,7 @@ public class RunningFragment extends Fragment
         long timeInMs = (SystemClock.elapsedRealtime() - chronometer.getBase());
         String averagePace = RunUtils.calculatePace(timeInMs, run.getDistance());
         String currentPace = runningManager.getCurrentPace();
-        double weight = PreferenceManager.getDefaultSharedPreferences(getContext())
-                .getFloat(getContext().getString(R.string.preferences_key_weight),
-                        getContext().getResources().getInteger(R.integer.preferences_def_weight));
-        int calories = RunUtils.calculateCaloriesBurned(timeInMs, weight);
+        int calories = RunUtils.calculateCaloriesBurned(timeInMs, coach.getUserWeight());
         txtDistance.setText(ResourceManager.roundDoubleWithDigits(run.getDistance(), 2) + " km");
         txtAvgPace.setText(averagePace + "\nmin/km");
         txtCurrentPace.setText(currentPace + "\nmin/km");
@@ -331,10 +351,51 @@ public class RunningFragment extends Fragment
         }
     }
 
+    private void animateTimeDistanceHeader(SwipeDirection direction) {
+
+        int x = (headerDataView.getWidth() / 2)
+                - (txtDistance.getWidth() / 2)
+                - (int) chronometer.getX();
+
+        switch (headerState) {
+
+            case NORMAL:
+
+                if (direction == SwipeDirection.LEFT) {
+                    txtDistance.animate().translationX(-x).start();
+                    chronometer.animate().scaleX(0.5f).scaleY(0.5f).alpha(0.5f).start();
+                    headerState = HeaderState.DISTANCE_UPFRONT;
+                } else {
+                    chronometer.animate().translationX(x).start();
+                    txtDistance.animate().scaleX(0.5f).scaleY(0.5f).alpha(0.5f).start();
+                    headerState = HeaderState.TIME_UPFRONT;
+                }
+                break;
+
+            case TIME_UPFRONT:
+
+                if (direction == SwipeDirection.LEFT) {
+                    chronometer.animate().translationX(0).start();
+                    txtDistance.animate().scaleX(1).scaleY(1).alpha(1).start();
+                    headerState = HeaderState.NORMAL;
+                }
+                break;
+
+            case DISTANCE_UPFRONT:
+
+                if (direction == SwipeDirection.RIGHT) {
+                    txtDistance.animate().translationX(0).start();
+                    chronometer.animate().scaleX(1).scaleY(1).alpha(1).start();
+                    headerState = HeaderState.NORMAL;
+                }
+                break;
+        }
+
+    }
+
     private void animateStartingViews(boolean animateOut) {
 
         int alpha = animateOut ? 0 : 1;
-
         // Animate button & transparent view with a fade out ;transition and hide it in the end
         btnStart.animate().alpha(alpha).setDuration(500);
         mapBackgroundView.animate().alpha(alpha).setDuration(500);

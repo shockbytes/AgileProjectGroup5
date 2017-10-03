@@ -1,6 +1,7 @@
 package com.bth.running.fragments;
 
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -152,6 +153,19 @@ public class HistoryDetailFragment extends Fragment implements OnMapReadyCallbac
     @OnClick(R.id.fragment_detail_history_btn_close)
     protected void onClickClose() {
         getFragmentManager().popBackStackImmediate();
+    }
+
+    @OnClick(R.id.fragment_detail_history_btn_share)
+    protected void onClickShare(){
+        Intent sendIntent = new Intent();
+
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "I ran " +
+                ResourceManager.roundDoubleWithDigits(run.getDistance(), 2) + " km in " +
+                ResourceManager.getPeriodFormatter()
+                .print(new Period(run.getTime(), PeriodType.time().withMillisRemoved())) + " sec. Look at me I'm mr meeseeks");
+        sendIntent.setType("text/plain");
+        startActivity(sendIntent);
     }
 
     private void setupMap() {

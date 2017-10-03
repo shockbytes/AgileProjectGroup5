@@ -1,6 +1,5 @@
 package com.bth.running.location;
 
-import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.os.Looper;
@@ -18,8 +17,6 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-
-import java.util.concurrent.ExecutorService;
 
 /**
  * @author Martin Macheiner
@@ -60,7 +57,7 @@ public class GooglePlayLocationManager implements LocationManager {
         return new LocationRequest()
                 .setInterval(UPDATE_INTERVAL_IN_MILLISECONDS)
                 .setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS)
-                .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
     @NonNull

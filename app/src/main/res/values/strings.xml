@@ -19,5 +19,6 @@
 
     <string name="weather_temperature">%d°C</string>
     <string name="weather_icon_url">http://openweathermap.org/img/w/%s.png</string>
+    <string name="notification_channel">Running</string>
 
 </resources>

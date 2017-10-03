@@ -135,6 +135,8 @@ public class Run extends RealmObject implements Parcelable {
     @Override
     public String toString() {
 
+        int locationSize = locations != null ? locations.size() : -1;
+        int realmLocationSize = realmLocations != null ? realmLocations.size() : -1;
         return "Start time:\t\t\t" +
                 new Date(startTime).toString() +
                 "\nDistance:\t\t\t\t" +
@@ -145,12 +147,14 @@ public class Run extends RealmObject implements Parcelable {
                 avgPace +
                 " km/h\nCalories:\t\t\t\t" +
                 calories +
-                " kcal\nLocation points:\t\t\t" +
-                realmLocations.size() +
+                " kcal\nRealm location points:\t\t\t" +
+                realmLocationSize +
+                "\nLocation points:\t\t\t" +
+                locationSize +
                 "\n---------------------\n";
     }
 
-    double getCurrentPaceDistance() {
+    public double getCurrentPaceDistance() {
 
         if (locations.size() < AppParams.LOCATIONS_FOR_CURRENT_PACE) {
             return 0;
@@ -159,13 +163,22 @@ public class Run extends RealmObject implements Parcelable {
                 .distanceTo(locations.get(locations.size() - 1)) / 1000d;
     }
 
-    long getCurrentPaceTime() {
+    public long getCurrentPaceTime() {
 
         if (locations.size() < AppParams.LOCATIONS_FOR_CURRENT_PACE) {
             return 0;
         }
         return (locations.get(locations.size() - 1)).getTime() -
                 locations.get(locations.size() - AppParams.LOCATIONS_FOR_CURRENT_PACE).getTime();
+    }
+
+    public List<LatLng> getRuntimeLocationAsLatLng() {
+
+        List<LatLng> points = new ArrayList<>();
+        for (Location l : locations) {
+            points.add(new LatLng(l.getLatitude(), l.getLongitude()));
+        }
+        return points;
     }
 
     public LatLng getStartLatLng() {

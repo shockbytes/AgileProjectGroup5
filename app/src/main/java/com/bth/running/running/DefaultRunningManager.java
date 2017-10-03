@@ -1,7 +1,7 @@
 package com.bth.running.running;
 
-import android.content.Context;
 import android.location.Location;
+import android.os.SystemClock;
 
 import com.bth.running.coaching.Coach;
 import com.bth.running.util.RunUtils;
@@ -16,25 +16,24 @@ public class DefaultRunningManager implements RunningManager {
     private boolean isRecording;
     private Run run;
     private Location prevLocation;
-    private Context context;
     private Coach coach;
 
-    public DefaultRunningManager(Context context, Coach coach) {
-        this.context = context;
+    public DefaultRunningManager(Coach coach) {
         this.coach = coach;
     }
 
     @Override
-    public void startRunRecording() {
+    public void startRunRecording(long startMillis) {
         isRecording = true;
-        run = new Run(System.currentTimeMillis());
+        run = new Run(startMillis);
         prevLocation = null;
     }
 
     @Override
-    public void stopRunRecord(long timeInMs) {
+    public void stopRunRecord() {
         isRecording = false;
 
+        long timeInMs = SystemClock.elapsedRealtime() - run.getStartTime();
         run.setTime(timeInMs);
         run.setAvgPace(RunUtils.calculatePace(timeInMs, run.getDistance()));
         double weight = coach.getUserWeight();
@@ -58,17 +57,12 @@ public class DefaultRunningManager implements RunningManager {
     }
 
     @Override
-    public String getCurrentPace() {
-
-
-        double distance = run.getCurrentPaceDistance();
-        long timeInMs = run.getCurrentPaceTime();
-
-        return RunUtils.calculatePace(timeInMs, distance);
+    public Run getCurrentRun() {
+        return run;
     }
 
     @Override
-    public Run getFinishedRun() {
+    public Run getFinishedRun(boolean resetRun) {
 
         if (!isRecording) {
             return run;

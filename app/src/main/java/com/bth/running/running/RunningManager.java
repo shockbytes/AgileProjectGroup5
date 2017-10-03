@@ -9,15 +9,15 @@ import android.location.Location;
 
 public interface RunningManager {
 
-    void startRunRecording();
+    void startRunRecording(long startTimeInMillis);
 
-    void stopRunRecord(long timeInMs);
+    void stopRunRecord();
 
     Run updateCurrentRun(Location location);
 
-    String getCurrentPace();
+    Run getCurrentRun();
 
-    Run getFinishedRun();
+    Run getFinishedRun(boolean resetRun);
 
     boolean isRecording();
 

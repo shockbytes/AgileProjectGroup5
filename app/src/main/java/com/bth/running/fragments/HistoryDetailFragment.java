@@ -14,6 +14,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -81,11 +84,28 @@ public class HistoryDetailFragment extends Fragment implements OnMapReadyCallbac
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         if (getArguments() != null) {
             run = getArguments().getParcelable(ARG_RUN);
             Log.wtf("Running", run.toString());
         }
         postponeEnterTransition();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_details, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.menu_details_share) {
+            onClickShare();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -155,7 +175,7 @@ public class HistoryDetailFragment extends Fragment implements OnMapReadyCallbac
         getFragmentManager().popBackStackImmediate();
     }
 
-    @OnClick(R.id.fragment_detail_history_btn_share)
+    //@OnClick(R.id.fragment_detail_history_btn_share)
     protected void onClickShare(){
         Intent sendIntent = new Intent();
 
@@ -165,7 +185,7 @@ public class HistoryDetailFragment extends Fragment implements OnMapReadyCallbac
                 ResourceManager.getPeriodFormatter()
                 .print(new Period(run.getTime(), PeriodType.time().withMillisRemoved())) + " sec. Look at me I'm mr meeseeks");
         sendIntent.setType("text/plain");
-        startActivity(sendIntent);
+        startActivity(Intent.createChooser(sendIntent, "Share your run"));
     }
 
     private void setupMap() {

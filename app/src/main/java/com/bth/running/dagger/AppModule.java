@@ -4,6 +4,7 @@ import android.app.Application;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 
 import com.bth.running.coaching.Coach;
@@ -81,6 +82,12 @@ public class AppModule {
     @Singleton
     public NotificationManager provideNotificationManager() {
         return (NotificationManager) app.getSystemService(Context.NOTIFICATION_SERVICE);
+    }
+
+    @Provides
+    @Singleton
+    public Vibrator provideVibrator() {
+        return (Vibrator) app.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
 }

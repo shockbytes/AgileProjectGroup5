@@ -1,6 +1,8 @@
 package com.bth.running.dagger;
 
 import android.app.Application;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
@@ -45,7 +47,7 @@ public class AppModule {
     @Provides
     @Singleton
     public RunningManager provideRunningManager(Coach coach) {
-        return new DefaultRunningManager(app.getApplicationContext(), coach);
+        return new DefaultRunningManager(coach);
     }
 
     @Provides
@@ -73,6 +75,12 @@ public class AppModule {
     @Singleton
     public Coach provideCoach(SharedPreferences preferences, WeatherApi api) {
         return new DefaultCoach(app.getApplicationContext(), preferences, api);
+    }
+
+    @Provides
+    @Singleton
+    public NotificationManager provideNotificationManager() {
+        return (NotificationManager) app.getSystemService(Context.NOTIFICATION_SERVICE);
     }
 
 }

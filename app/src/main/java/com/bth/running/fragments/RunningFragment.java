@@ -2,16 +2,16 @@ package com.bth.running.fragments;
 
 
 import android.Manifest;
-import android.content.IntentSender;
+import android.content.Context;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GestureDetectorCompat;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -20,23 +20,20 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bth.running.R;
 import com.bth.running.coaching.Coach;
 import com.bth.running.core.MainActivity;
 import com.bth.running.core.RunningApp;
-import com.bth.running.location.LocationManager;
+import com.bth.running.location.RunningBroker;
 import com.bth.running.running.Run;
 import com.bth.running.running.RunningManager;
 import com.bth.running.storage.StorageManager;
 import com.bth.running.util.AppParams;
 import com.bth.running.util.ResourceManager;
+import com.bth.running.util.RunUpdate;
 import com.bth.running.util.RunUtils;
 import com.bth.running.util.ViewManager;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.ResolvableApiException;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -55,10 +52,12 @@ import butterknife.OnClick;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
+import static com.bth.running.util.AppParams.REQ_CODE_PERM_LOCATION;
+
 
 public class RunningFragment extends Fragment
-        implements OnMapReadyCallback, LocationManager.OnLocationUpdateListener,
-        GestureDetector.OnDoubleTapListener {
+        implements OnMapReadyCallback,
+        GestureDetector.OnDoubleTapListener, RunningBroker.RunningBrokerClient {
 
     private enum HeaderState {
         NORMAL, TIME_UPFRONT, DISTANCE_UPFRONT
@@ -67,9 +66,6 @@ public class RunningFragment extends Fragment
     private enum SwipeDirection {
         LEFT, RIGHT
     }
-
-    private static final int REQ_CODE_PERM_LOCATION = 0x1245;
-    private static final int REQUEST_CHECK_SETTINGS = 0x9874;
 
     public static RunningFragment newInstance() {
         RunningFragment fragment = new RunningFragment();
@@ -86,11 +82,10 @@ public class RunningFragment extends Fragment
 
     private GestureDetectorCompat gestureDetector;
 
-    @Inject
-    protected Coach coach;
+    private RunningBroker runningBroker;
 
     @Inject
-    protected LocationManager locationManager;
+    protected Coach coach;
 
     @Inject
     protected RunningManager runningManager;
@@ -152,7 +147,7 @@ public class RunningFragment extends Fragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setupTextViews();
+        clearViews();
         setupHeaderGestureRecognizer();
     }
 
@@ -160,21 +155,18 @@ public class RunningFragment extends Fragment
     public void onResume() {
         super.onResume();
         showMapFragment();
+
+        if (runningManager.isRecording()) {
+            setResetRunningViews(true);
+            chronometer.setBase(runningManager.getCurrentRun().getStartTime());
+            chronometer.start();
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        if (locationManager.isLocationUpdateRequested()) {
-            locationManager.stop();
-        }
     }
 
     @Override
@@ -190,6 +182,48 @@ public class RunningFragment extends Fragment
         setupMapAndLocationServices();
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        try {
+            runningBroker = (RunningBroker) context;
+        } catch (IllegalArgumentException e) {
+            Log.wtf("Running", "Parent not implementing interface");
+        }
+    }
+
+    @OnClick(R.id.fragment_running_btn_start)
+    protected void onClickButtonStart() {
+        startRun();
+    }
+
+    @Override
+    public boolean onSingleTapConfirmed(MotionEvent motionEvent) {
+        return true;
+    }
+
+    @Override
+    public boolean onDoubleTap(MotionEvent motionEvent) {
+        stopRun();
+        return true;
+    }
+
+    @Override
+    public boolean onDoubleTapEvent(MotionEvent motionEvent) {
+        return true;
+    }
+
+    @Override
+    public void onRunUpdates(RunUpdate update) {
+        updateRun(update);
+    }
+
+    @Override
+    public void onRunFinished() {
+        showFinishedRun();
+    }
+
     @SuppressWarnings({"MissingPermission"})
     @AfterPermissionGranted(REQ_CODE_PERM_LOCATION)
     private void setupMapAndLocationServices() {
@@ -197,7 +231,6 @@ public class RunningFragment extends Fragment
         if (EasyPermissions.hasPermissions(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION)) {
             map.setMyLocationEnabled(true);
-            locationManager.start(this);
         } else {
             EasyPermissions.requestPermissions(this, getString(R.string.perm_location_rationale),
                     REQ_CODE_PERM_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -205,23 +238,7 @@ public class RunningFragment extends Fragment
         }
     }
 
-    private void setupTextViews() {
-        chronometer.setText("00:00");
-        txtDistance.setText("0.0 km");
-        txtCurrentPace.setText("0:00\nmin/km");
-        txtCalories.setText("0\nkcal");
-        txtAvgPace.setText("0:00\nmin/km");
-    }
-
-    private void showMapFragment() {
-        isFirstLocation = true;
-
-        SupportMapFragment mapFragment = new SupportMapFragment();
-        getFragmentManager().beginTransaction()
-                .replace(R.id.fragment_running_map_container, mapFragment)
-                .commit();
-        mapFragment.getMapAsync(this);
-    }
+    // -------------------------- Setup --------------------------
 
     private void setupHeaderGestureRecognizer() {
 
@@ -275,6 +292,20 @@ public class RunningFragment extends Fragment
         });
     }
 
+    // -----------------------------------------------------------
+
+    // ------------------ Show views / fragments -----------------
+
+    private void showMapFragment() {
+        isFirstLocation = true;
+
+        SupportMapFragment mapFragment = new SupportMapFragment();
+        getFragmentManager().beginTransaction()
+                .replace(R.id.fragment_running_map_container, mapFragment)
+                .commit();
+        mapFragment.getMapAsync(this);
+    }
+
     private void showHelpHeader() {
 
         ((MainActivity) getActivity()).animateToolbar();
@@ -313,42 +344,36 @@ public class RunningFragment extends Fragment
         ViewManager.animateDoubleTap(stopHelpImageView);
     }
 
-    private void updateTrackOnMap(Location loc) {
+    private void showFinishedRun() {
 
-        if (trackLine == null) {
-            PolylineOptions lineOptions = new PolylineOptions()
-                    .width(15)
-                    .color(Color.parseColor("#03A9F4"));
-            trackLine = map.addPolyline(lineOptions);
-        }
+        Run run = runningManager.getFinishedRun(true);
+        chronometer.stop();
 
-        LatLng current = new LatLng(loc.getLatitude(), loc.getLongitude());
-        List<LatLng> pointsSoFar = trackLine.getPoints();
-        pointsSoFar.add(current);
-        trackLine.setPoints(pointsSoFar);
+        setResetRunningViews(false);
+
+        storageManager.storeRun(run);
+        showDetailFragment(run);
     }
 
-    private void updateViews(Run run) {
-
-        long timeInMs = (SystemClock.elapsedRealtime() - chronometer.getBase());
-        String averagePace = RunUtils.calculatePace(timeInMs, run.getDistance());
-        String currentPace = runningManager.getCurrentPace();
-        int calories = RunUtils.calculateCaloriesBurned(timeInMs, coach.getUserWeight());
-        txtDistance.setText(ResourceManager.roundDoubleWithDigits(run.getDistance(), 2) + " km");
-        txtAvgPace.setText(averagePace + "\nmin/km");
-        txtCurrentPace.setText(currentPace + "\nmin/km");
-        txtCalories.setText(calories + "\nkcal");
+    private void showDetailFragment(Run run) {
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
+                        android.R.anim.fade_in, android.R.anim.fade_out)
+                .replace(R.id.main_content, HistoryDetailFragment.newInstance(run))
+                .addToBackStack(null)
+                .commit();
     }
 
-    private void clearViews() {
+    // -----------------------------------------------------------
 
-        // Clear the text views
-        setupTextViews();
-        // Clear map
-        if (trackLine != null) {
-            trackLine.remove();
-            trackLine = null;
-        }
+    // ------------------------ Animation ------------------------
+
+    private void animateStartingViews(boolean animateOut) {
+
+        int alpha = animateOut ? 0 : 1;
+        // Animate button & transparent view with a fade out ;transition and hide it in the end
+        btnStart.animate().alpha(alpha).setDuration(500);
+        mapBackgroundView.animate().alpha(alpha).setDuration(500);
     }
 
     private void animateTimeDistanceHeader(SwipeDirection direction) {
@@ -393,99 +418,27 @@ public class RunningFragment extends Fragment
 
     }
 
-    private void animateStartingViews(boolean animateOut) {
+    // -----------------------------------------------------------
 
-        int alpha = animateOut ? 0 : 1;
-        // Animate button & transparent view with a fade out ;transition and hide it in the end
-        btnStart.animate().alpha(alpha).setDuration(500);
-        mapBackgroundView.animate().alpha(alpha).setDuration(500);
-    }
+    // ---------------- Start / Stop / Update run ----------------
 
     private void startRun() {
 
-        clearViews();
-
-        runningManager.startRunRecording();
-        animateStartingViews(true);
-
-        chronometer.setBase(SystemClock.elapsedRealtime());
+        long startMillis = SystemClock.elapsedRealtime();
+        runningBroker.startRun(startMillis);
+        chronometer.setBase(startMillis);
         chronometer.start();
 
-        ((MainActivity) getActivity()).lockNavigationDrawer(true);
+        setResetRunningViews(true);
     }
 
     private void stopRun() {
-
-        animateStartingViews(false);
-        clearViews();
-
-        chronometer.stop();
-        long elapsedMillis = (SystemClock.elapsedRealtime() - chronometer.getBase());
-
-        runningManager.stopRunRecord(elapsedMillis);
-        ((MainActivity) getActivity()).lockNavigationDrawer(false);
-
-        Run run = runningManager.getFinishedRun();
-        storageManager.storeRun(run);
-        showDetailFragment(run);
+        runningBroker.stopRun();
     }
 
-    private void showDetailFragment(Run run) {
-        getFragmentManager().beginTransaction()
-                .setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out,
-                        android.R.anim.fade_in, android.R.anim.fade_out)
-                .replace(R.id.main_content, HistoryDetailFragment.newInstance(run))
-                .addToBackStack(null)
-                .commit();
-    }
+    private void updateRun(RunUpdate runUpdate) {
 
-    @OnClick(R.id.fragment_running_btn_start)
-    protected void onClickButtonStart() {
-
-        if (!runningManager.isRecording()) {
-            startRun();
-        }
-    }
-
-    @Override
-    public void onConnected() {
-    }
-
-    @Override
-    public void onDisconnected() {
-    }
-
-    @Override
-    public void onError(Exception e) {
-
-        int statusCode = ((ApiException) e).getStatusCode();
-        switch (statusCode) {
-
-            case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-
-                try {
-
-                    ResolvableApiException rae = (ResolvableApiException) e;
-                    rae.startResolutionForResult(getActivity(), REQUEST_CHECK_SETTINGS);
-
-                } catch (IntentSender.SendIntentException sie) {
-                    sie.printStackTrace();
-                }
-
-                break;
-
-            case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-
-                Toast.makeText(getContext(), "Wrong location settings, fix in settings!",
-                        Toast.LENGTH_LONG).show();
-                break;
-
-        }
-    }
-
-    @Override
-    public void onLocationUpdate(Location location) {
-
+        Location location = runUpdate.getLocation();
         if (isFirstLocation) {
             isFirstLocation = false;
             map.moveCamera(CameraUpdateFactory
@@ -495,31 +448,61 @@ public class RunningFragment extends Fragment
                     .newLatLng(new LatLng(location.getLatitude(), location.getLongitude())));
         }
 
-        if (runningManager.isRecording()) {
-            Run run = runningManager.updateCurrentRun(location);
-            updateViews(run);
-            updateTrackOnMap(location);
+        Run run = runningManager.getCurrentRun();
+        if (runUpdate.isRunInfoAvailable() && run != null) {
+            updateViews(runUpdate);
+            setTrackOnMap(run.getRuntimeLocationAsLatLng());
         }
     }
 
-    @Override
-    public boolean onSingleTapConfirmed(MotionEvent motionEvent) {
-        return true;
+    private void updateViews(RunUpdate update) {
+
+        long timeInMs = (SystemClock.elapsedRealtime() - chronometer.getBase());
+        String averagePace = RunUtils.calculatePace(timeInMs, update.getDistance());
+        int calories = RunUtils.calculateCaloriesBurned(timeInMs, coach.getUserWeight());
+        txtDistance.setText(ResourceManager.roundDoubleWithDigits(update.getDistance(), 2) + " km");
+        txtAvgPace.setText(averagePace + "\nmin/km");
+        txtCurrentPace.setText(update.getCurrentPace() + "\nmin/km");
+        txtCalories.setText(calories + "\nkcal");
     }
 
-    @Override
-    public boolean onDoubleTap(MotionEvent motionEvent) {
+    private void setTrackOnMap(List<LatLng> runPoints) {
 
-        if (runningManager.isRecording()) {
-            stopRun();
-        } else {
-            Snackbar.make(getView(), "Run hasn't started", Snackbar.LENGTH_SHORT).show();
+        if (trackLine == null) {
+            PolylineOptions lineOptions = new PolylineOptions()
+                    .width(15)
+                    .color(Color.parseColor("#03A9F4"));
+            trackLine = map.addPolyline(lineOptions);
         }
-        return true;
+        trackLine.setPoints(runPoints);
     }
 
-    @Override
-    public boolean onDoubleTapEvent(MotionEvent motionEvent) {
-        return true;
+    // -----------------------------------------------------------
+
+    // -------------------- Convenience helper -------------------
+
+    private void clearViews() {
+
+        // Clear the text views
+        chronometer.setText("00:00");
+        txtDistance.setText("0.0 km");
+        txtCurrentPace.setText("0:00\nmin/km");
+        txtCalories.setText("0\nkcal");
+        txtAvgPace.setText("0:00\nmin/km");
+
+        // Clear map
+        if (trackLine != null) {
+            trackLine.remove();
+            trackLine = null;
+        }
     }
+
+    private void setResetRunningViews(boolean isSetup) {
+        clearViews();
+        animateStartingViews(isSetup);
+        ((MainActivity) getActivity()).lockNavigationDrawer(isSetup);
+    }
+
+    // -----------------------------------------------------------
+
 }

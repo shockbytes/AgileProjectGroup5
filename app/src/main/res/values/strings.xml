@@ -17,8 +17,14 @@
     <string name="coach_body_height">Height • cm</string>
     <string name="coach_weather_header">Weather</string>
 
+    <string name="coach_stats_distance">%s km\nalready covered</string>
+    <string name="coach_stats_longest_run">%s\nlongest run</string>
+    <string name="coach_stats_calories">%d\ncalories burned</string>
+    <string name="coach_stats_avg_pace">%s min/km\naverage pace</string>
+
     <string name="weather_temperature">%d°C</string>
     <string name="weather_icon_url">http://openweathermap.org/img/w/%s.png</string>
     <string name="notification_channel">Running</string>
+    <string name="coach_stats_header">Statistics</string>
 
 </resources>

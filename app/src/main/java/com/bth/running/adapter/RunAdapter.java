@@ -61,7 +61,7 @@ public class RunAdapter extends BaseAdapter<Run> {
             txtDuration.setText(ResourceManager.getPeriodFormatter()
                     .print(new Period(run.getTime(), PeriodType.time().withMillisRemoved())));
             txtDatetime.setText(DateTimeFormat.forPattern("dd. MMM yyyy - kk:mm")
-                    .print(run.getStartTime()));
+                    .print(run.getStartTimeSinceEpoch()));
             txtDistance.setText(ResourceManager.roundDoubleWithDigits(run.getDistance(), 2) + " km");
         }
 

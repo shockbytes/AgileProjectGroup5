@@ -39,156 +39,156 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
                     android:fontFamily="sans-serif-light"
-                    android:textSize="22sp"
-                    />
+                    android:textSize="22sp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:baselineAligned="false"
                     android:orientation="horizontal"
                     android:weightSum="1">
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="0.2"
-                        android:layout_height="wrap_content">
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/fragment_coach_weather_day_1_txt_day"
-                            android:gravity="center"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:gravity="center" />
 
                         <ImageView
                             android:id="@+id/fragment_coach_weather_day_1_img"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginBottom="4dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:layout_marginTop="4dp"
                             android:minHeight="32dp" />
 
                         <TextView
                             android:id="@+id/fragment_coach_weather_day_1_txt_temp"
-                            android:textColor="@android:color/primary_text_light"
-                            android:gravity="center"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="@android:color/primary_text_light" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="0.2"
-                        android:layout_height="wrap_content">
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/fragment_coach_weather_day_2_txt_day"
-                            android:gravity="center"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:gravity="center" />
 
                         <ImageView
                             android:id="@+id/fragment_coach_weather_day_2_img"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginBottom="4dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:layout_marginTop="4dp"
                             android:minHeight="32dp" />
 
                         <TextView
                             android:id="@+id/fragment_coach_weather_day_2_txt_temp"
-                            android:textColor="@android:color/primary_text_light"
-                            android:gravity="center"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="@android:color/primary_text_light" />
 
                     </LinearLayout>
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="0.2"
-                        android:layout_height="wrap_content">
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/fragment_coach_weather_day_3_txt_day"
-                            android:gravity="center"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:gravity="center" />
 
                         <ImageView
                             android:id="@+id/fragment_coach_weather_day_3_img"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginBottom="4dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:layout_marginTop="4dp"
                             android:minHeight="32dp" />
 
                         <TextView
                             android:id="@+id/fragment_coach_weather_day_3_txt_temp"
-                            android:textColor="@android:color/primary_text_light"
-                            android:gravity="center"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="@android:color/primary_text_light" />
 
                     </LinearLayout>
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="0.2"
-                        android:layout_height="wrap_content">
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/fragment_coach_weather_day_4_txt_day"
-                            android:gravity="center"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:gravity="center" />
 
                         <ImageView
                             android:id="@+id/fragment_coach_weather_day_4_img"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginBottom="4dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:layout_marginTop="4dp"
                             android:minHeight="32dp" />
 
                         <TextView
                             android:id="@+id/fragment_coach_weather_day_4_txt_temp"
-                            android:textColor="@android:color/primary_text_light"
-                            android:gravity="center"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="@android:color/primary_text_light" />
 
                     </LinearLayout>
 
                     <LinearLayout
-                        android:orientation="vertical"
                         android:layout_width="0dp"
+                        android:layout_height="wrap_content"
                         android:layout_weight="0.2"
-                        android:layout_height="wrap_content">
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/fragment_coach_weather_day_5_txt_day"
-                            android:gravity="center"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:gravity="center" />
 
                         <ImageView
                             android:id="@+id/fragment_coach_weather_day_5_img"
-                            android:layout_marginTop="4dp"
-                            android:layout_marginBottom="4dp"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="4dp"
+                            android:layout_marginTop="4dp"
                             android:minHeight="32dp" />
 
                         <TextView
                             android:id="@+id/fragment_coach_weather_day_5_txt_temp"
-                            android:textColor="@android:color/primary_text_light"
-                            android:gravity="center"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="@android:color/primary_text_light" />
 
                     </LinearLayout>
 
@@ -200,10 +200,10 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -265,9 +265,166 @@
                     style="?android:borderlessButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end|right"
+                    android:layout_gravity="end"
                     android:padding="16dp"
                     android:text="Update" />
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:drawableLeft="@drawable/ic_stats"
+                    android:drawablePadding="16dp"
+                    android:drawableStart="@drawable/ic_stats"
+                    android:gravity="center_vertical"
+                    android:text="@string/coach_stats_header"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:layout_marginTop="8dp"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:orientation="vertical">
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="@dimen/stats_image_size"
+                            android:layout_height="@dimen/stats_image_size"
+                            android:layout_gravity="center_horizontal"
+                            app:srcCompat="@drawable/ic_distance"
+                            app:tint="@color/light_gray" />
+
+                        <TextView
+                            android:id="@+id/fragment_coach_stats_txt_distance"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:fontFamily="sans-serif-light"
+                            android:gravity="center_horizontal"
+                            android:textColor="@android:color/secondary_text_light"
+                            android:textSize="17sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:orientation="vertical">
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="@dimen/stats_image_size"
+                            android:layout_height="@dimen/stats_image_size"
+                            android:layout_gravity="center_horizontal"
+                            app:srcCompat="@drawable/ic_time"
+                            app:tint="@color/light_gray" />
+
+                        <TextView
+                            android:id="@+id/fragment_coach_stats_txt_longest_run"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:fontFamily="sans-serif-light"
+                            android:gravity="center_horizontal"
+                            android:textColor="@android:color/secondary_text_light"
+                            android:textSize="17sp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:weightSum="1">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:orientation="vertical">
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="@dimen/stats_image_size"
+                            android:layout_height="@dimen/stats_image_size"
+                            android:layout_gravity="center_horizontal"
+                            app:srcCompat="@drawable/ic_calories"
+                            app:tint="@color/light_gray" />
+
+                        <TextView
+                            android:id="@+id/fragment_coach_stats_txt_calories"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:fontFamily="sans-serif-light"
+                            android:gravity="center_horizontal"
+                            android:textColor="@android:color/secondary_text_light"
+                            android:textSize="17sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.5"
+                        android:orientation="vertical">
+
+                        <android.support.v7.widget.AppCompatImageView
+                            android:layout_width="@dimen/stats_image_size"
+                            android:layout_height="@dimen/stats_image_size"
+                            android:layout_gravity="center_horizontal"
+                            app:srcCompat="@drawable/ic_average_pace"
+                            app:tint="@color/light_gray" />
+
+                        <TextView
+                            android:id="@+id/fragment_coach_stats_txt_avg_pace"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:fontFamily="sans-serif-light"
+                            android:gravity="center_horizontal"
+                            android:textColor="@android:color/secondary_text_light"
+                            android:textSize="17sp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/fragment_coach_stats_btn_reset"
+                    style="?android:borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:padding="16dp"
+                    android:text="Reset" />
 
             </LinearLayout>
 

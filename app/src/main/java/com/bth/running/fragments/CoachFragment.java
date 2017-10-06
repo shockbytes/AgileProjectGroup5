@@ -19,6 +19,8 @@ import com.bth.running.R;
 import com.bth.running.coaching.Coach;
 import com.bth.running.core.RunningApp;
 import com.bth.running.location.LocationManager;
+import com.bth.running.statistics.Statistics;
+import com.bth.running.statistics.StatisticsManager;
 import com.bth.running.util.ResourceManager;
 import com.bth.running.weather.model.Weather;
 import com.bth.running.weather.model.WeatherRecord;
@@ -55,6 +57,9 @@ public class CoachFragment extends Fragment implements OnCompleteListener<Locati
     @Inject
     protected LocationManager locationManager;
 
+    @Inject
+    protected StatisticsManager statisticsManager;
+
     @Bind(R.id.fragment_coach_body_edit_height)
     protected EditText editHeight;
 
@@ -63,6 +68,18 @@ public class CoachFragment extends Fragment implements OnCompleteListener<Locati
 
     @Bind(R.id.fragment_coach_weather_txt_place)
     protected TextView txtPlace;
+
+    @Bind(R.id.fragment_coach_stats_txt_distance)
+    protected TextView txtStatsDistance;
+
+    @Bind(R.id.fragment_coach_stats_txt_longest_run)
+    protected TextView txtStatsLongestRun;
+
+    @Bind(R.id.fragment_coach_stats_txt_calories)
+    protected TextView txtStatsCalories;
+
+    @Bind(R.id.fragment_coach_stats_txt_avg_pace)
+    protected TextView txtStatsAvgPace;
 
     @Bind({R.id.fragment_coach_weather_day_1_txt_temp,
             R.id.fragment_coach_weather_day_2_txt_temp,
@@ -85,9 +102,7 @@ public class CoachFragment extends Fragment implements OnCompleteListener<Locati
             R.id.fragment_coach_weather_day_5_img})
     protected List<ImageView> imgViewsWeather;
 
-    public CoachFragment() {
-        // Required empty public constructor
-    }
+    public CoachFragment() { }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -107,6 +122,7 @@ public class CoachFragment extends Fragment implements OnCompleteListener<Locati
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setupViews();
+        setupStatistics();
         // Subscribe for the last known position and trigger the weather fetching upon receiving
         locationManager.subscribeForLastLocationCallback(this);
     }
@@ -132,6 +148,14 @@ public class CoachFragment extends Fragment implements OnCompleteListener<Locati
         Snackbar.make(getView(), "Body information updated!", Snackbar.LENGTH_SHORT).show();
     }
 
+    @OnClick(R.id.fragment_coach_stats_btn_reset)
+    protected void onClickResetStatistics() {
+
+        statisticsManager.resetStatistics();
+        setupStatistics();
+        Snackbar.make(getView(), "Statistics set back", Snackbar.LENGTH_SHORT).show();
+    }
+
     private void setupViews() {
         editWeight.setText(String.valueOf(coach.getUserWeight()));
         editHeight.setText(String.valueOf(coach.getUserHeight()));
@@ -153,6 +177,20 @@ public class CoachFragment extends Fragment implements OnCompleteListener<Locati
                     .into(imgViewsWeather.get(i));
         }
 
+    }
+
+    private void setupStatistics() {
+
+        Statistics stats = statisticsManager.getStatistics();
+
+        txtStatsDistance.setText(
+                getString(R.string.coach_stats_distance, stats.getCoveredKilometers()));
+        txtStatsLongestRun.setText(
+                getString(R.string.coach_stats_longest_run, stats.getLongestRunFormatted()));
+        txtStatsCalories.setText(
+                getString(R.string.coach_stats_calories, stats.getBurnedCalories()));
+        txtStatsAvgPace.setText(
+                getString(R.string.coach_stats_avg_pace, stats.getFastestPace()));
     }
 
     private void loadWeather(@NonNull final String place) {

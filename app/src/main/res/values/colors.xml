@@ -7,4 +7,6 @@
 
     <color name="run_detailed_icon_tint">#424242</color>
 
+    <color name="light_gray">#646464</color>
+
 </resources>

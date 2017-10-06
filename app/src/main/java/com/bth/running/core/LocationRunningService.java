@@ -14,6 +14,8 @@ import android.location.Location;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.SystemClock;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
@@ -42,7 +44,7 @@ public class LocationRunningService extends Service
         return new Intent(context, LocationRunningService.class);
     }
 
-    private static final int REQUEST_CHECK_SETTINGS = 0x9874;
+    private static final long VIBRATION_INTERVAL = 600000L; // 10 minutes
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -76,6 +78,8 @@ public class LocationRunningService extends Service
 
     private NotificationCompat.Builder notificationBuilder;
 
+    private long startMillisVibration;
+
     @Inject
     protected NotificationManager notificationManager;
 
@@ -85,6 +89,9 @@ public class LocationRunningService extends Service
     @Inject
     protected RunningManager runningManager;
 
+    @Inject
+    protected Vibrator vibrator;
+
     public LocationRunningService() {
     }
 
@@ -92,21 +99,19 @@ public class LocationRunningService extends Service
     public void onCreate() {
         super.onCreate();
         ((RunningApp) getApplication()).getAppComponent().inject(this);
-        locationManager.start(this);
 
+        startMillisVibration = -1;
+        locationManager.start(this);
         LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
-        Log.wtf("Running", "onStartCommand()");
         return START_NOT_STICKY;
     }
 
     @Override
     public boolean stopService(Intent name) {
-        Log.wtf("Running", "stopService()");
         stopLocationUpdates();
         return super.stopService(name);
     }
@@ -114,7 +119,6 @@ public class LocationRunningService extends Service
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.wtf("Running", "onDestroy LocationRunningService!");
         stopSelf();
         stopLocationUpdates();
     }
@@ -153,7 +157,7 @@ public class LocationRunningService extends Service
                 /*
                 try {
 
-                    // TODO Propagate to Activity
+                    // Propagate to Activity
                     ResolvableApiException rae = (ResolvableApiException) e;
                     rae.startResolutionForResult(this, REQUEST_CHECK_SETTINGS);
 
@@ -178,11 +182,10 @@ public class LocationRunningService extends Service
         if (runningManager.isRecording()) {
             run = runningManager.updateCurrentRun(location);
             updateNotification(run);
+            checkVibration();
         }
-        Log.wtf("Running", "Send location update");
         LocalBroadcastManager.getInstance(this)
                 .sendBroadcast(sendLocationUpdateIntent(new RunUpdate(location, run)));
-        //locationPublisher.onNext(new RunUpdate(location, run));
     }
 
     private void stopLocationUpdates() {
@@ -262,9 +265,25 @@ public class LocationRunningService extends Service
         }
     }
 
+    private void checkVibration() {
+
+        if (startMillisVibration > -1
+                && SystemClock.elapsedRealtime() > startMillisVibration + VIBRATION_INTERVAL) {
+            startMillisVibration = SystemClock.elapsedRealtime();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createOneShot(300,
+                        VibrationEffect.DEFAULT_AMPLITUDE));
+            } else {
+                //noinspection deprecation
+                vibrator.vibrate(300);
+            }
+        }
+    }
+
     public void startRun(long startMillis) {
 
         if (!runningManager.isRecording()) {
+            startMillisVibration = startMillis;
             runningManager.startRunRecording(startMillis);
             notificationBuilder = createServiceNotification("0.0km");
             startForeground(AppParams.NOTIFICATION_ID, notificationBuilder.build());
@@ -274,6 +293,7 @@ public class LocationRunningService extends Service
     public Run stopRun() {
 
         if (runningManager.isRecording()) {
+            startMillisVibration = -1;
             runningManager.stopRunRecord();
             stopForeground(true);
             return runningManager.getFinishedRun(false);

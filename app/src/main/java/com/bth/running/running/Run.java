@@ -3,6 +3,7 @@ package com.bth.running.running;
 import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.SystemClock;
 
 import com.bth.running.location.RealmLatLng;
 import com.bth.running.util.AppParams;
@@ -33,17 +34,19 @@ public class Run extends RealmObject implements Parcelable {
     private RealmList<RealmLatLng> realmLocations;
 
     private long startTime;
+    private long startTimeSinceEpoch;
     private double distance;
     private long time; // in ms
     private int calories;
     private String avgPace; // 00:00
 
     public Run() {
-        this(System.currentTimeMillis());
+        this(SystemClock.elapsedRealtime(), System.currentTimeMillis());
     }
 
-    public Run(long startTime) {
+    public Run(long startTime, long startTimeInCurrentMillis) {
         this.startTime = startTime;
+        this.startTimeSinceEpoch = startTimeInCurrentMillis;
         locations = new ArrayList<>();
     }
 
@@ -54,6 +57,7 @@ public class Run extends RealmObject implements Parcelable {
         realmLocations.addAll(in.createTypedArrayList(RealmLatLng.CREATOR));
         //realmLocations = in.createTypedArrayList(RealmLatLng.CREATOR);
         startTime = in.readLong();
+        startTimeSinceEpoch = in.readLong();
         distance = in.readDouble();
         time = in.readLong();
         calories = in.readInt();
@@ -104,6 +108,10 @@ public class Run extends RealmObject implements Parcelable {
         return time;
     }
 
+    public long getStartTimeSinceEpoch() {
+        return startTimeSinceEpoch;
+    }
+
     public void convertLocationsToRealmList() {
         realmLocations = new RealmList<>();
         for (Location l : locations) {
@@ -122,7 +130,6 @@ public class Run extends RealmObject implements Parcelable {
     public void setId(long id) {
         this.id = id;
     }
-
 
     public long getStartTime() {
         return startTime;
@@ -211,6 +218,7 @@ public class Run extends RealmObject implements Parcelable {
         parcel.writeLong(id);
         parcel.writeTypedList(realmLocations);
         parcel.writeLong(startTime);
+        parcel.writeLong(startTimeSinceEpoch);
         parcel.writeDouble(distance);
         parcel.writeLong(time);
         parcel.writeInt(calories);

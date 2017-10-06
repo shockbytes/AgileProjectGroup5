@@ -25,7 +25,7 @@ public class DefaultRunningManager implements RunningManager {
     @Override
     public void startRunRecording(long startMillis) {
         isRecording = true;
-        run = new Run(startMillis);
+        run = new Run(startMillis, System.currentTimeMillis());
         prevLocation = null;
     }
 

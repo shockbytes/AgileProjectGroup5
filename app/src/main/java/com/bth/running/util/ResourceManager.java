@@ -184,6 +184,7 @@ public class ResourceManager {
     public static PeriodFormatter getPeriodFormatter() {
         return new PeriodFormatterBuilder()
                 .minimumPrintedDigits(2)
+                .printZeroAlways()
                 .appendHours()
                 .appendSeparator(":")
                 .appendMinutes()

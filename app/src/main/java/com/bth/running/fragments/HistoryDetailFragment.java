@@ -208,7 +208,7 @@ public class HistoryDetailFragment extends Fragment implements OnMapReadyCallbac
         txtTime.setText(ResourceManager.getPeriodFormatter()
                 .print(new Period(run.getTime(), PeriodType.time().withMillisRemoved())));
         txtDate.setText(DateTimeFormat.forPattern("dd. MMM yyyy - kk:mm")
-                .print(run.getStartTime()));
+                .print(run.getStartTimeSinceEpoch()));
         txtCalories.setText(run.getCalories() + " kcal");
         txtAvgPace.setText(run.getAveragePace() + " min/km");
     }

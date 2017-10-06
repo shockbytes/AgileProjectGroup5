@@ -13,6 +13,9 @@ import com.bth.running.location.GooglePlayLocationManager;
 import com.bth.running.location.LocationManager;
 import com.bth.running.running.DefaultRunningManager;
 import com.bth.running.running.RunningManager;
+import com.bth.running.statistics.DefaultStatisticsManager;
+import com.bth.running.statistics.StatisticsManager;
+import com.bth.running.storage.RealmRunningMigration;
 import com.bth.running.storage.RealmStorageManager;
 import com.bth.running.storage.StorageManager;
 import com.bth.running.util.AppParams;
@@ -62,6 +65,7 @@ public class AppModule {
     public Realm provideRealm() {
         RealmConfiguration config = new RealmConfiguration.Builder()
                 .schemaVersion(AppParams.REALM_SCHEMA_VERSION)
+                .migration(new RealmRunningMigration())
                 .build();
          return Realm.getInstance(config);
     }
@@ -88,6 +92,12 @@ public class AppModule {
     @Singleton
     public Vibrator provideVibrator() {
         return (Vibrator) app.getSystemService(Context.VIBRATOR_SERVICE);
+    }
+
+    @Provides
+    @Singleton
+    public StatisticsManager provideStatisticsManager(Realm realm) {
+        return new DefaultStatisticsManager(realm);
     }
 
 }

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
@@ -28,6 +29,7 @@ import com.bth.running.core.RunningApp;
 import com.bth.running.location.RunningBroker;
 import com.bth.running.running.Run;
 import com.bth.running.running.RunningManager;
+import com.bth.running.statistics.StatisticsManager;
 import com.bth.running.storage.StorageManager;
 import com.bth.running.util.AppParams;
 import com.bth.running.util.ResourceManager;
@@ -92,6 +94,9 @@ public class RunningFragment extends Fragment
 
     @Inject
     protected StorageManager storageManager;
+
+    @Inject
+    protected StatisticsManager statisticsManager;
 
     @Bind(R.id.fragment_running_header)
     protected View headerView;
@@ -348,11 +353,15 @@ public class RunningFragment extends Fragment
 
         Run run = runningManager.getFinishedRun(true);
         chronometer.stop();
-
         setResetRunningViews(false);
 
-        storageManager.storeRun(run);
-        showDetailFragment(run);
+        if (run != null) {
+            storageManager.storeRun(run);
+            statisticsManager.updateStatistics(run);
+            showDetailFragment(run);
+        } else {
+            Snackbar.make(getView(), "Run hasn't started", Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     private void showDetailFragment(Run run) {

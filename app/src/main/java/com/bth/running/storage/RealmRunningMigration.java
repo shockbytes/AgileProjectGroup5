@@ -22,11 +22,11 @@ public class RealmRunningMigration implements RealmMigration {
     public void migrate(@NonNull DynamicRealm realm, long oldVersion, long newVersion) {
 
         RealmSchema schema = realm.getSchema();
-        if (newVersion == AppParams.REALM_VERSION_STATS_UPDATE_VERSION) {
+        if (oldVersion == AppParams.REALM_VERSION_STATS_UPDATE_VERSION) {
             addStatistics(schema);
-            newVersion++;
+            oldVersion++;
         }
-        if (newVersion == AppParams.REALM_VERSION_RUN_START_TIME_UPDATE) {
+        if (oldVersion == AppParams.REALM_VERSION_RUN_START_TIME_UPDATE) {
             addStartTimeSinceEpoch(schema);
         }
     }

@@ -28,6 +28,16 @@ public class RealmRunningMigration implements RealmMigration {
         }
         if (oldVersion == AppParams.REALM_VERSION_RUN_START_TIME_UPDATE) {
             addStartTimeSinceEpoch(schema);
+            oldVersion++;
+        }
+        if (oldVersion == AppParams.REALM_VERSION_BUGFIX) {
+            String name = Statistics.class.getSimpleName();
+            RealmObjectSchema realmObject = schema.get(name);
+            if (realmObject != null) {
+                realmObject.addField("primaryKey", long.class);
+                realmObject.addIndex("primaryKey");
+            }
+            oldVersion++;
         }
     }
 
@@ -49,7 +59,7 @@ public class RealmRunningMigration implements RealmMigration {
         String name = Run.class.getSimpleName();
         RealmObjectSchema realmObject = schema.get(name);
         if (realmObject != null) {
-           realmObject.addField("startTimeSinceEpoch", long.class);
+            realmObject.addField("startTimeSinceEpoch", long.class);
         }
     }
 

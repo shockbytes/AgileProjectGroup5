@@ -15,7 +15,8 @@ public class AppParams {
     public static final int REALM_VERSION_INIT_VERSION = 1;
     public static final int REALM_VERSION_STATS_UPDATE_VERSION = 2;
     public static final int REALM_VERSION_RUN_START_TIME_UPDATE = 3;
-    public static final int REALM_SCHEMA_VERSION = REALM_VERSION_RUN_START_TIME_UPDATE;
+    public static final int REALM_VERSION_BUGFIX = 4;
+    public static final int REALM_SCHEMA_VERSION = 5;
 
     public static final int NOTIFICATION_ID = 0x1726;
     public static final String NOTIFICATION_CHANNEL_ID = "def_channel";

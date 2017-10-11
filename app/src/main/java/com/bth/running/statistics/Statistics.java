@@ -8,6 +8,7 @@ import com.bth.running.util.ResourceManager;
 import org.joda.time.Period;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * @author Martin Macheiner
@@ -15,6 +16,9 @@ import io.realm.RealmObject;
  */
 
 public class Statistics extends RealmObject {
+
+    @PrimaryKey
+    private long primaryKey = 1; // Just keep it here to update the object class
 
     private double kilometersCovered;
     private long longestRun; // In milliseconds

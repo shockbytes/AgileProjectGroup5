@@ -25,10 +25,15 @@ public class DefaultStatisticsManager implements StatisticsManager {
         Statistics stats = realm.where(Statistics.class).findFirst();
         // Create a new stats object if it isn't available
         if (stats == null) {
-            realm.beginTransaction();
-            stats = new Statistics();
-            realm.copyToRealm(stats);
-            realm.commitTransaction();
+            if (realm.isInTransaction()) {
+                stats = new Statistics();
+                realm.copyToRealm(stats);
+            } else {
+                realm.beginTransaction();
+                stats = new Statistics();
+                realm.copyToRealm(stats);
+                realm.commitTransaction();
+            }
         }
         return stats;
     }
@@ -38,7 +43,8 @@ public class DefaultStatisticsManager implements StatisticsManager {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(@NonNull Realm realm) {
-                getStatistics().deleteFromRealm();
+                Statistics stats = getStatistics();
+                stats.deleteFromRealm();
             }
         });
     }
@@ -48,7 +54,9 @@ public class DefaultStatisticsManager implements StatisticsManager {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(@NonNull Realm realm) {
-                getStatistics().update(run);
+                Statistics stats = getStatistics();
+                stats.update(run);
+                realm.copyToRealmOrUpdate(stats);
             }
         });
     }

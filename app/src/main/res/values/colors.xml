@@ -5,8 +5,10 @@
     <color name="colorAccent">#FF9800</color>
     <color name="help_background">#DD212121</color>
 
-    <color name="run_detailed_icon_tint">#424242</color>
-
+    <color name="dark_gray">#424242</color>
+    <color name="backgroundPrimary">#EEEEEE</color>
     <color name="light_gray">#646464</color>
+
+    <color name="bottomNavigationBackground">#FAFAFA</color>
 
 </resources>

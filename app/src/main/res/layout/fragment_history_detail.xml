@@ -6,7 +6,7 @@
     android:background="#eee"
     android:orientation="vertical"
     android:padding="0dp"
-    tools:context="com.bth.running.fragments.HistoryDetailFragment">
+    tools:context="com.bth.running.ui.fragment.HistoryDetailFragment">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"

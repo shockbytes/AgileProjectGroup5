@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:padding="8dp"
     android:background="#eee"
-    tools:context="com.bth.running.fragments.HistoryFragment">
+    tools:context="com.bth.running.ui.fragment.HistoryFragment">
 
     <TextView
         android:id="@+id/fragment_history_empty"

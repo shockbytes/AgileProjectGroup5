@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.bth.running.fragments.RunningFragment">
+    tools:context="com.bth.running.ui.fragment.RunningFragment">
 
     <FrameLayout
         android:id="@+id/fragment_running_header"

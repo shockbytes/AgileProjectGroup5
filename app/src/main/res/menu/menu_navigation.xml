@@ -5,10 +5,10 @@
     <group android:checkableBehavior="single">
 
         <item
-            android:id="@+id/menu_navigation_coach"
+            android:id="@+id/menu_navigation_profile"
             android:checked="true"
             android:icon="@drawable/ic_navigation_coach"
-            android:title="@string/title_coach" />
+            android:title="@string/title_profile" />
 
         <item
             android:id="@+id/menu_navigation_run"
@@ -19,17 +19,6 @@
             android:id="@+id/menu_navigation_history"
             android:icon="@drawable/ic_navigation_history"
             android:title="@string/title_history" />
-
-        <item android:title="">
-            <menu>
-
-                <item
-                    android:id="@+id/menu_navigation_settings"
-                    android:icon="@drawable/ic_navigation_settings"
-                    android:title="Settings" />
-
-            </menu>
-        </item>
     </group>
 
 
